@@ -38,13 +38,13 @@ struct WorkoutAccordion: View {
                 HStack(spacing: 12) {
                     Image(systemName: workout.iconName)
                         .font(.title3)
-                        .foregroundStyle(isExpanded ? .black : .white)
+                        .foregroundStyle(isExpanded ? .black : .primary)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(workout.name)
                             .font(.headline)
                             .fontWeight(.bold)
-                            .foregroundStyle(isExpanded ? .black : .white)
+                            .foregroundStyle(isExpanded ? .black : .primary)
                         Text("\(workout.exercises.count) exos · Semaine \(currentWeek)")
                             .font(.caption)
                             .foregroundStyle(isExpanded ? .black.opacity(0.6) : DesignTokens.textSecondary)
@@ -53,11 +53,11 @@ struct WorkoutAccordion: View {
                     Spacer()
 
                     // Session timer
-                    if isExpanded && viewModel.sessionStartDate != nil {
+                    if isExpanded && viewModel.isSessionActive {
                         Text(viewModel.sessionTimerFormatted)
                             .font(.system(.caption, design: .monospaced))
                             .fontWeight(.bold)
-                            .foregroundStyle(isExpanded ? .black.opacity(0.7) : theme.accentColor)
+                            .foregroundStyle(.black.opacity(0.7))
                     }
 
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
@@ -73,36 +73,60 @@ struct WorkoutAccordion: View {
             // Content
             if isExpanded {
                 VStack(spacing: 8) {
-                    HStack {
-                        Spacer()
-                        if viewModel.isLogging {
-                            Button {
-                                withAnimation(.snappy(duration: 0.25)) { viewModel.cancelLogging() }
-                            } label: {
-                                Text("Annuler")
+                    // Action bar
+                    if !viewModel.isSessionActive {
+                        // Session pas demarree: bouton Demarrer
+                        Button {
+                            withAnimation(.snappy(duration: 0.25)) {
+                                viewModel.startSession()
+                            }
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "play.fill")
+                                Text("Demarrer la seance")
+                            }
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(theme.accentColor)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 12)
+                    } else {
+                        // Session active
+                        HStack {
+                            if viewModel.isLogging {
+                                // Logging actif: pouvoir masquer les champs de saisie
+                                Button {
+                                    withAnimation(.snappy(duration: 0.25)) { viewModel.stopLogging() }
+                                } label: {
+                                    Text("Masquer saisie")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(DesignTokens.textSecondary)
+                                }
+                            } else {
+                                Button {
+                                    withAnimation(.snappy(duration: 0.25)) { viewModel.startLogging() }
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "pencil.line")
+                                        Text("Logger")
+                                    }
                                     .font(.subheadline)
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(DesignTokens.destructive)
-                            }
-                        } else {
-                            Button {
-                                withAnimation(.snappy(duration: 0.25)) { viewModel.startLogging() }
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "pencil.line")
-                                    Text("Logger")
+                                    .foregroundStyle(theme.accentColor)
                                 }
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(theme.accentColor)
                             }
+                            Spacer()
                         }
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 12)
+                        .padding(.horizontal)
+                        .padding(.top, 12)
 
-                    // Rest timer (visible when logging)
-                    if viewModel.isLogging {
+                        // Rest timer
                         RestTimerView(defaultSeconds: restTimerSeconds)
                             .padding(.horizontal)
                     }
@@ -128,6 +152,39 @@ struct WorkoutAccordion: View {
                                 .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [6]))
                                 .foregroundStyle(DesignTokens.border)
                         )
+                    }
+
+                    // End session button
+                    if viewModel.isSessionActive {
+                        Button {
+                            viewModel.requestEndSession()
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "stop.fill")
+                                Text("Terminer la seance")
+                            }
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(DesignTokens.destructive)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .padding(.top, 4)
+                        .alert("Terminer la seance ?", isPresented: Binding(
+                            get: { viewModel.showEndConfirmation },
+                            set: { viewModel.showEndConfirmation = $0 }
+                        )) {
+                            Button("Continuer", role: .cancel) { }
+                            Button("Terminer", role: .destructive) {
+                                withAnimation {
+                                    viewModel.endSession(exerciseCount: workout.exercises.count)
+                                }
+                            }
+                        } message: {
+                            Text("Ta seance de \(viewModel.sessionTimerFormatted) sera enregistree.")
+                        }
                     }
                 }
                 .padding(12)

@@ -41,7 +41,7 @@ struct CreateRunningTypeSheet: View {
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
                                 .background(type == t ? theme.accentColor : DesignTokens.card2)
-                                .foregroundStyle(type == t ? .black : .white)
+                                .foregroundStyle(type == t ? .black : .primary)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
                         }

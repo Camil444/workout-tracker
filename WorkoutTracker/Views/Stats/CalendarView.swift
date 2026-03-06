@@ -101,7 +101,7 @@ struct ActivityCalendarView: View {
 
             // Day of week headers
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-                ForEach(["L", "M", "M", "J", "V", "S", "D"], id: \.self) { day in
+                ForEach(Array(["L", "Ma", "Me", "J", "V", "S", "D"].enumerated()), id: \.offset) { _, day in
                     Text(day)
                         .font(.caption2)
                         .fontWeight(.semibold)
@@ -131,7 +131,7 @@ struct ActivityCalendarView: View {
                                     .fontWeight(isToday ? .bold : .regular)
                                     .foregroundStyle(
                                         isSelected ? .black :
-                                        count > 0 ? .white :
+                                        count > 0 ? .primary :
                                         DesignTokens.textSecondary
                                     )
 

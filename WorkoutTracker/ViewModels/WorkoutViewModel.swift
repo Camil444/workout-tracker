@@ -6,6 +6,9 @@ final class WorkoutViewModel {
     var selectedTab: Int = 0
     var expandedWorkoutID: UUID?
     var expandedExerciseID: UUID?
+
+    // Session state: started (timer running) vs logging (can log sets)
+    var isSessionActive: Bool = false
     var isLogging: Bool = false
 
     // Session timer
@@ -24,11 +27,18 @@ final class WorkoutViewModel {
     var prExerciseName: String = ""
     var prValue: String = ""
 
+    // Session end recap
+    var showEndConfirmation: Bool = false
+    var showSessionRecap: Bool = false
+    var lastSessionDuration: TimeInterval = 0
+    var lastSessionExerciseCount: Int = 0
+    var sessionFeeling: String = ""
+
     func navigateToWorkout(_ workout: Workout) {
         expandedWorkoutID = workout.id
         expandedExerciseID = nil
-        isLogging = false
         selectedTab = 1
+        startSession()
     }
 
     func toggleWorkout(_ workout: Workout) {
@@ -36,7 +46,9 @@ final class WorkoutViewModel {
             expandedWorkoutID = nil
             expandedExerciseID = nil
             isLogging = false
-            stopSessionTimer()
+            if isSessionActive {
+                // Ne pas stopper la session quand on ferme l'accordion
+            }
         } else {
             expandedWorkoutID = workout.id
             expandedExerciseID = nil
@@ -52,23 +64,53 @@ final class WorkoutViewModel {
         }
     }
 
-    func startLogging() {
+    // MARK: - Session lifecycle
+
+    func startSession() {
+        isSessionActive = true
         isLogging = true
         startSessionTimer()
     }
 
-    func cancelLogging() {
+    func startLogging() {
+        isLogging = true
+    }
+
+    func stopLogging() {
         isLogging = false
+    }
+
+    func requestEndSession() {
+        showEndConfirmation = true
+    }
+
+    func endSession(exerciseCount: Int) {
+        lastSessionDuration = sessionElapsed
+        lastSessionExerciseCount = exerciseCount
+        sessionFeeling = ""
+        isLogging = false
+        isSessionActive = false
+        stopRestTimer()
+        stopSessionTimer()
+        showEndConfirmation = false
+        showSessionRecap = true
+    }
+
+    func dismissRecap() {
+        showSessionRecap = false
+        sessionFeeling = ""
     }
 
     // MARK: - Session Timer
 
-    func startSessionTimer() {
+    private func startSessionTimer() {
         guard sessionStartDate == nil else { return }
         sessionStartDate = Date()
         sessionTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            guard let self, let start = self.sessionStartDate else { return }
-            self.sessionElapsed = Date().timeIntervalSince(start)
+            DispatchQueue.main.async {
+                guard let self, let start = self.sessionStartDate else { return }
+                self.sessionElapsed = Date().timeIntervalSince(start)
+            }
         }
     }
 
@@ -90,6 +132,16 @@ final class WorkoutViewModel {
         return String(format: "%02d:%02d", m, s)
     }
 
+    func formatDuration(_ duration: TimeInterval) -> String {
+        let total = Int(duration)
+        let h = total / 3600
+        let m = (total % 3600) / 60
+        if h > 0 {
+            return "\(h)h\(String(format: "%02d", m))"
+        }
+        return "\(m)min"
+    }
+
     // MARK: - Rest Timer
 
     func startRestTimer(seconds: Int) {
@@ -98,11 +150,13 @@ final class WorkoutViewModel {
         isRestTimerRunning = true
         restTimer?.invalidate()
         restTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            if self.restTimerRemaining > 0 {
-                self.restTimerRemaining -= 1
-            } else {
-                self.stopRestTimer()
+            DispatchQueue.main.async {
+                guard let self else { return }
+                if self.restTimerRemaining > 0 {
+                    self.restTimerRemaining -= 1
+                } else {
+                    self.stopRestTimer()
+                }
             }
         }
     }

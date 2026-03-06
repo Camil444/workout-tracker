@@ -12,7 +12,8 @@ struct SettingsView: View {
     @State private var workoutToDelete: Workout?
     @State private var runningToDelete: RunningSessionType?
     @State private var activityToDelete: SportActivity?
-    @State private var showLocationSettings = false
+    @State private var draggedWorkout: Workout?
+    @State private var showResetConfirmation = false
 
     private var profile: UserProfile? { profiles.first }
 
@@ -106,24 +107,6 @@ struct SettingsView: View {
                     }
                 }
 
-                section("Lieux d'entrainement") {
-                    Button {
-                        showLocationSettings = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "mappin.circle.fill")
-                                .foregroundStyle(theme.accentColor)
-                            Text("Gerer mes lieux")
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(DesignTokens.textSecondary)
-                        }
-                    }
-                }
-
                 section("Seances") {
                     if workouts.isEmpty {
                         Text("Aucune seance")
@@ -156,9 +139,25 @@ struct SettingsView: View {
                                 .padding()
                                 .background(DesignTokens.card2)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                            }
-                            .onMove { from, to in
-                                reorderWorkouts(from: from, to: to)
+                                .opacity(draggedWorkout?.id == workout.id ? 0.5 : 1)
+                                .draggable(workout.id.uuidString) {
+                                    Text(workout.name)
+                                        .padding(8)
+                                        .background(DesignTokens.card2)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                }
+                                .dropDestination(for: String.self) { items, _ in
+                                    guard let droppedIDString = items.first,
+                                          let droppedID = UUID(uuidString: droppedIDString),
+                                          let fromIndex = workouts.firstIndex(where: { $0.id == droppedID }),
+                                          let toIndex = workouts.firstIndex(where: { $0.id == workout.id }),
+                                          fromIndex != toIndex else { return false }
+                                    var reordered = Array(workouts)
+                                    let item = reordered.remove(at: fromIndex)
+                                    reordered.insert(item, at: toIndex)
+                                    for (i, w) in reordered.enumerated() { w.sortOrder = i }
+                                    return true
+                                }
                             }
                         }
                     }
@@ -233,21 +232,35 @@ struct SettingsView: View {
                 }
 
                 section("A propos") {
-                    HStack {
-                        Text("Version")
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
-                            .foregroundStyle(DesignTokens.textSecondary)
+                    VStack(spacing: 12) {
+                        HStack {
+                            Text("Version")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
+                                .foregroundStyle(DesignTokens.textSecondary)
+                        }
+
+                        Divider().background(DesignTokens.border)
+
+                        Button {
+                            showResetConfirmation = true
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "arrow.counterclockwise")
+                                Text("Reinitialiser l'application")
+                            }
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(DesignTokens.destructive)
+                            .frame(maxWidth: .infinity)
+                        }
                     }
                 }
             }
             .padding(.top)
         }
         .background(DesignTokens.bgPrimary)
-        .sheet(isPresented: $showLocationSettings) {
-            LocationSettingsView()
-        }
         .alert(
             "Supprimer \(workoutToDelete?.name ?? "") ?",
             isPresented: Binding(
@@ -299,13 +312,26 @@ struct SettingsView: View {
         } message: {
             Text("Cette action est irreversible. Toutes les sessions de cette activite seront supprimees.")
         }
+        .alert("Reinitialiser l'application ?", isPresented: $showResetConfirmation) {
+            Button("Annuler", role: .cancel) { }
+            Button("Reinitialiser", role: .destructive) {
+                resetApp()
+            }
+        } message: {
+            Text("Toutes les donnees seront supprimees et tu reviendras a l'onboarding.")
+        }
     }
 
-    private func reorderWorkouts(from source: IndexSet, to destination: Int) {
-        var reordered = workouts
-        reordered.move(fromOffsets: source, toOffset: destination)
-        for (index, workout) in reordered.enumerated() {
-            workout.sortOrder = index
+    private func resetApp() {
+        for w in workouts { modelContext.delete(w) }
+        for r in runningSessions { modelContext.delete(r) }
+        for a in sportActivities { modelContext.delete(a) }
+        if let profile {
+            profile.hasCompletedOnboarding = false
+            profile.firstName = ""
+            profile.age = nil
+            profile.weight = nil
+            profile.height = nil
         }
     }
 

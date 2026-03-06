@@ -26,12 +26,11 @@ struct OnboardingView: View {
                      onSkip: { withAnimation { step = 3 } })
                 .tag(2)
 
-            FirstWorkoutStep { _ in completeOnboarding() }
+            ProgramChoiceStep { completeOnboarding() }
                 .tag(3)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .animation(.easeInOut, value: step)
-        .ignoresSafeArea()
     }
 
     private func completeOnboarding() {

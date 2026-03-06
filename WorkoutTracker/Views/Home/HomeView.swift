@@ -15,6 +15,7 @@ struct HomeView: View {
     @State private var selectedRunning: RunningSessionType?
     @State private var selectedActivity: SportActivity?
     @State private var showProgramTemplates = false
+    @State private var workoutToStart: Workout?
 
     private var profile: UserProfile? { profiles.first }
 
@@ -28,19 +29,14 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 24) {
                 // Header
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Bonne séance")
-                        .font(.subheadline)
-                        .foregroundStyle(DesignTokens.textSecondary)
                     Text("Bonjour, \(profile?.firstName ?? "")")
                         .font(.system(size: 30, weight: .heavy))
                         .foregroundStyle(.primary)
+                    Text("Quelle seance aujourd'hui ?")
+                        .font(.subheadline)
+                        .foregroundStyle(DesignTokens.textSecondary)
                 }
                 .padding(.horizontal)
-
-                Text("Quelle séance aujourd'hui ?")
-                    .font(.subheadline)
-                    .foregroundStyle(DesignTokens.textSecondary)
-                    .padding(.horizontal)
 
                 // SECTION: Musculation
                 HStack {
@@ -63,7 +59,7 @@ struct HomeView: View {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(workouts) { workout in
                         Button {
-                            viewModel.navigateToWorkout(workout)
+                            workoutToStart = workout
                         } label: {
                             WorkoutCard(
                                 workout: workout,
@@ -133,6 +129,23 @@ struct HomeView: View {
         }
         .sheet(item: $selectedActivity) { activity in
             LogActivitySheet(activity: activity)
+        }
+        .alert(
+            "Demarrer \(workoutToStart?.name ?? "") ?",
+            isPresented: Binding(
+                get: { workoutToStart != nil },
+                set: { if !$0 { workoutToStart = nil } }
+            )
+        ) {
+            Button("Annuler", role: .cancel) { workoutToStart = nil }
+            Button("Demarrer") {
+                if let workout = workoutToStart {
+                    viewModel.navigateToWorkout(workout)
+                    workoutToStart = nil
+                }
+            }
+        } message: {
+            Text("La seance va demarrer avec le chrono.")
         }
     }
 

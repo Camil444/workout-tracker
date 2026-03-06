@@ -10,45 +10,58 @@ struct AddExerciseSheet: View {
 
     @State private var name = ""
     @State private var unit: ExerciseUnit = .kg
+    @State private var addedExercises: [(name: String, unit: ExerciseUnit, id: UUID)] = []
+    @FocusState private var isExerciseFieldFocused: Bool
     @State private var showAISearch = false
     @State private var aiDescription = ""
     @State private var aiLoading = false
     @State private var aiError: String?
 
     private var suggestions: [ExerciseRecommendation] {
-        let existing = Set(workout.exercises.map { $0.name.lowercased() })
+        let existingNames = Set(workout.exercises.map { $0.name.lowercased() })
+        let addedNames = Set(addedExercises.map { $0.name.lowercased() })
+        let allExisting = existingNames.union(addedNames)
         return ExerciseRecommendations.suggestions(for: workout.name)
-            .filter { !existing.contains($0.name.lowercased()) }
+            .filter { !allExisting.contains($0.name.lowercased()) }
     }
 
     var body: some View {
         NavigationStack {
+            ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    TextField("Nom de l'exercice", text: $name)
-                        .textFieldStyle(.plain)
-                        .padding()
-                        .background(DesignTokens.card2)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundStyle(.primary)
-                        .submitLabel(.done)
-
-                    HStack(spacing: 12) {
-                        ForEach(ExerciseUnit.allCases, id: \.self) { u in
-                            Button {
-                                unit = u
-                            } label: {
-                                Text(u.rawValue)
-                                    .fontWeight(.semibold)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                                    .background(unit == u ? theme.accentColor : DesignTokens.card2)
-                                    .foregroundStyle(unit == u ? .black : .white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    // Exercices ajoutes dans cette session
+                    if !addedExercises.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Ajoutes")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(DesignTokens.textSecondary)
+                            ForEach(addedExercises, id: \.id) { ex in
+                                HStack {
+                                    Text(ex.name)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    Text(ex.unit.rawValue)
+                                        .font(.caption2)
+                                        .fontWeight(.bold)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 3)
+                                        .background(ex.unit == .pdc ? theme.accentColor.opacity(0.2) : DesignTokens.card2)
+                                        .foregroundStyle(ex.unit == .pdc ? theme.accentColor : DesignTokens.textSecondary)
+                                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(theme.accentColor)
+                                }
+                                .padding(.vertical, 4)
                             }
                         }
                     }
 
+                    // Suggestions
                     if !suggestions.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Suggestions")
@@ -59,10 +72,11 @@ struct AddExerciseSheet: View {
                             FlowLayout(spacing: 8) {
                                 ForEach(suggestions) { rec in
                                     Button {
-                                        name = rec.name
-                                        unit = rec.unit
+                                        addExercise(name: rec.name, unit: rec.unit)
                                     } label: {
                                         HStack(spacing: 4) {
+                                            Image(systemName: "plus")
+                                                .font(.system(size: 8, weight: .bold))
                                             Text(rec.name)
                                                 .font(.subheadline)
                                             if rec.unit == .pdc {
@@ -75,16 +89,8 @@ struct AddExerciseSheet: View {
                                         .fontWeight(.medium)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 8)
-                                        .background(
-                                            name == rec.name
-                                                ? theme.accentColor.opacity(0.2)
-                                                : DesignTokens.card2
-                                        )
-                                        .foregroundStyle(
-                                            name == rec.name
-                                                ? theme.accentColor
-                                                : .white
-                                        )
+                                        .background(DesignTokens.card2)
+                                        .foregroundStyle(.primary)
                                         .clipShape(RoundedRectangle(cornerRadius: 10))
                                     }
                                 }
@@ -92,13 +98,51 @@ struct AddExerciseSheet: View {
                         }
                     }
 
+                    // Input toujours visible
+                    VStack(spacing: 8) {
+                        TextField("Nom de l'exercice", text: $name)
+                            .textFieldStyle(.plain)
+                            .font(.subheadline)
+                            .padding(10)
+                            .background(DesignTokens.card2)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .foregroundStyle(.primary)
+                            .focused($isExerciseFieldFocused)
+                            .submitLabel(.done)
+                            .onSubmit { addCurrentExercise() }
+
+                        HStack {
+                            ForEach(ExerciseUnit.allCases, id: \.self) { u in
+                                Button {
+                                    unit = u
+                                } label: {
+                                    Text(u.rawValue)
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 8)
+                                        .background(unit == u ? theme.accentColor : DesignTokens.card2)
+                                        .foregroundStyle(unit == u ? .black : .primary)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                }
+                            }
+                            Spacer()
+                            Button("Ajouter") { addCurrentExercise() }
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                                .foregroundStyle(name.trimmingCharacters(in: .whitespaces).isEmpty ? DesignTokens.textSecondary : theme.accentColor)
+                                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                        }
+                    }
+
+                    // AI search
                     VStack(alignment: .leading, spacing: 10) {
                         Button {
                             withAnimation { showAISearch.toggle() }
                         } label: {
                             HStack(spacing: 8) {
                                 Image(systemName: "sparkles")
-                                Text("Décrire un exercice")
+                                Text("Decrire un exercice")
                                     .fontWeight(.semibold)
                             }
                             .font(.subheadline)
@@ -107,7 +151,7 @@ struct AddExerciseSheet: View {
 
                         if showAISearch {
                             VStack(spacing: 12) {
-                                TextField("Ex: la machine où on pousse les poids avec les jambes...", text: $aiDescription, axis: .vertical)
+                                TextField("Ex: la machine ou on pousse les poids avec les jambes...", text: $aiDescription, axis: .vertical)
                                     .textFieldStyle(.plain)
                                     .lineLimit(2...4)
                                     .padding()
@@ -152,29 +196,40 @@ struct AddExerciseSheet: View {
                         }
                     }
 
+                    // Bouton Terminer
                     Button {
-                        addExercise()
+                        dismiss()
                     } label: {
-                        Text("Ajouter")
+                        Text(addedExercises.isEmpty ? "Fermer" : "Terminer")
                             .fontWeight(.bold)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(canAdd ? theme.accentColor : DesignTokens.card2)
-                            .foregroundStyle(canAdd ? .black : DesignTokens.textSecondary)
+                            .background(addedExercises.isEmpty ? DesignTokens.card2 : theme.accentColor)
+                            .foregroundStyle(addedExercises.isEmpty ? DesignTokens.textSecondary : .black)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
-                    .disabled(!canAdd)
+                    .id("bottomButton")
                 }
                 .padding()
             }
             .scrollDismissesKeyboard(.interactively)
-            .dismissKeyboardOnTap()
+            .onChange(of: isExerciseFieldFocused) { _, focused in
+                if focused {
+                    scrollToBottom(proxy)
+                }
+            }
+            .onChange(of: addedExercises.count) {
+                if isExerciseFieldFocused {
+                    scrollToBottom(proxy)
+                }
+            }
             .background(DesignTokens.bgPrimary)
-            .navigationTitle("Nouvel exercice")
+            }
+            .navigationTitle("Ajouter des exercices")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Annuler") { dismiss() }
+                    Button("Fermer") { dismiss() }
                         .foregroundStyle(DesignTokens.textSecondary)
                 }
             }
@@ -184,19 +239,31 @@ struct AddExerciseSheet: View {
         .presentationBackground(DesignTokens.bgPrimary)
     }
 
-    private var canAdd: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty
+    private func scrollToBottom(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            withAnimation(.easeOut(duration: 0.25)) {
+                proxy.scrollTo("bottomButton", anchor: .bottom)
+            }
+        }
     }
 
-    private func addExercise() {
+    private func addCurrentExercise() {
+        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        addExercise(name: trimmed, unit: unit)
+        name = ""
+        unit = .kg
+    }
+
+    private func addExercise(name: String, unit: ExerciseUnit) {
         let exercise = Exercise(
-            name: name.trimmingCharacters(in: .whitespaces),
+            name: name,
             unit: unit,
-            sortOrder: workout.exercises.count
+            sortOrder: workout.exercises.count + addedExercises.count
         )
         exercise.workout = workout
         modelContext.insert(exercise)
-        dismiss()
+        addedExercises.append((name: name, unit: unit, id: UUID()))
     }
 
     private func searchWithAI() {

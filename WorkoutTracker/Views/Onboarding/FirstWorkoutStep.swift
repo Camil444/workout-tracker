@@ -50,7 +50,7 @@ struct FirstWorkoutStep: View {
                                         .font(.title2)
                                         .frame(width: 50, height: 50)
                                         .background(selectedIcon == icon ? theme.accentColor : DesignTokens.card2)
-                                        .foregroundStyle(selectedIcon == icon ? .black : .white)
+                                        .foregroundStyle(selectedIcon == icon ? .black : .primary)
                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
                             }
@@ -138,7 +138,7 @@ struct FirstWorkoutStep: View {
                                             .padding(.horizontal, 20)
                                             .padding(.vertical, 10)
                                             .background(newExerciseUnit == unit ? theme.accentColor : DesignTokens.card2)
-                                            .foregroundStyle(newExerciseUnit == unit ? .black : .white)
+                                            .foregroundStyle(newExerciseUnit == unit ? .black : .primary)
                                             .clipShape(RoundedRectangle(cornerRadius: 10))
                                     }
                                 }

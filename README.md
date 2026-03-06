@@ -1,6 +1,6 @@
 # Workout Tracker
 
-App iOS native en SwiftUI pour suivre ses performances en musculation. Remplace les tableaux Notes par une interface fluide et motivante.
+App iOS native en SwiftUI pour suivre ses performances en musculation, course a pied et activites sportives.
 
 ## Stack
 
@@ -12,41 +12,49 @@ App iOS native en SwiftUI pour suivre ses performances en musculation. Remplace 
 
 ## Fonctionnalites
 
-- **Accueil** : grille mosaique des seances avec max affiches
-- **Logger** : systeme accordeon pour enregistrer ses series (reps x poids)
-- **Stats** : graphiques de progression par exercice avec Swift Charts
-- **Parametres** : profil, couleur d'accent personnalisable, gestion des seances
+- **Onboarding** : choix de programme (PPL, Upper/Lower, Full Body, Bro Split) avec seances pre-remplies et personnalisables
+- **Accueil** : grille des seances musculation, course a pied et activites avec confirmation avant demarrage
+- **Logger** : systeme accordeon avec timer de session, timer de repos, saisie des series (reps x poids), detection de PR avec celebration
+- **Stats** : graphiques de progression par exercice, calendrier d'activite, cartes resume
+- **Course a pied** : suivi footing et fractionne (duree, distance, vitesse)
+- **Activites** : suivi d'activites sportives personnalisees
+- **Parametres** : profil, mode sombre/clair, couleur d'accent, timer de repos, gestion des seances, reinitialisation
+- **IA** : identification d'exercice par description (OpenAI)
 
 ## Design
 
-- Dark mode, inspire de Nike Training Club
+- Dark/Light mode, inspire de Nike Training Club
 - Couleur d'accent personnalisable (defaut: jaune-vert fluo #E8FF00)
 - Typographie SF Pro bold, interface minimaliste
-- Animations fluides (accordeons, transitions)
+- Animations fluides (accordeons, transitions, confetti PR)
 
 ## Architecture
 
 ```
 WorkoutTracker/
   App/                  # Point d'entree
-  Models/               # SwiftData models (UserProfile, Workout, Exercise, ExerciseLog, SetEntry)
+  Models/               # SwiftData models
   Views/
-    Onboarding/         # Flow d'onboarding (4 etapes)
-    Home/               # Grille des seances
-    Logger/             # Accordeon + saisie des logs
-    Stats/              # Graphiques Swift Charts
-    Settings/           # Profil, couleur, gestion
+    Onboarding/         # Flow d'onboarding (4 etapes + choix programme)
+    Home/               # Grille des seances, courses, activites
+    Logger/             # Accordeon + saisie + timer repos + recap session
+    Running/            # Sheets course a pied
+    Activities/         # Sheets activites sportives
+    Stats/              # Graphiques Swift Charts + calendrier
+    Settings/           # Profil, apparence, gestion, reset
     Shared/             # Composants reutilisables
   ViewModels/           # ThemeManager, WorkoutViewModel
-  Utilities/            # Extensions, Design Tokens
+  Utilities/            # Extensions, Design Tokens, Recommendations, Templates
 ```
 
 ## Modele de donnees
 
-- **UserProfile** : prenom, infos physiques, couleur d'accent, onboarding
+- **UserProfile** : prenom, infos physiques, couleur d'accent, mode sombre, timer repos, onboarding
 - **Workout** : seance avec nom, icone SF Symbol, liste d'exercices
 - **Exercise** : exercice avec unite (kg ou PDC), historique de logs
 - **ExerciseLog** : entree hebdomadaire avec series (reps x poids)
+- **RunningSessionType** : type de course (footing/fractionne) avec logs
+- **SportActivity** : activite sportive personnalisee avec logs
 
 ## Installation
 

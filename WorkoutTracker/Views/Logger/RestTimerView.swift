@@ -27,7 +27,7 @@ struct RestTimerView: View {
                         VStack(spacing: 0) {
                             Text(timerString(viewModel.restTimerRemaining))
                                 .font(.system(size: 22, weight: .heavy, design: .monospaced))
-                                .foregroundStyle(viewModel.restTimerRemaining <= 5 ? DesignTokens.destructive : .white)
+                                .foregroundStyle(viewModel.restTimerRemaining <= 5 ? DesignTokens.destructive : .primary)
                         }
                     }
 
@@ -67,7 +67,7 @@ struct RestTimerView: View {
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 8)
                                     .background(seconds == defaultSeconds ? theme.accentColor : DesignTokens.card2)
-                                    .foregroundStyle(seconds == defaultSeconds ? .black : .white)
+                                    .foregroundStyle(seconds == defaultSeconds ? .black : .primary)
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
                         }

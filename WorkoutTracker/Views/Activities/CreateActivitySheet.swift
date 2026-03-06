@@ -44,7 +44,7 @@ struct CreateActivitySheet: View {
                                     .font(.title3)
                                     .frame(width: 46, height: 46)
                                     .background(selectedIcon == icon ? theme.accentColor : DesignTokens.card2)
-                                    .foregroundStyle(selectedIcon == icon ? .black : .white)
+                                    .foregroundStyle(selectedIcon == icon ? .black : .primary)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                             }
                         }

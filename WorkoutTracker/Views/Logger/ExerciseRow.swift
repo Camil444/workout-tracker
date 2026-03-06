@@ -81,7 +81,7 @@ struct ExerciseRow: View {
                     isLogging: isLogging,
                     onLogSaved: {
                         withAnimation {
-                            viewModel.cancelLogging()
+                            viewModel.expandedExerciseID = nil
                         }
                     }
                 )

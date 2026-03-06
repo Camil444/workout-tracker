@@ -98,7 +98,7 @@ struct StatsView: View {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                         .background(isSelected ? theme.accentColor : DesignTokens.card1)
-                        .foregroundStyle(isSelected ? .black : .white)
+                        .foregroundStyle(isSelected ? .black : .primary)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                 }

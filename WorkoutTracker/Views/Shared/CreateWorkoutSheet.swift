@@ -13,7 +13,11 @@ struct CreateWorkoutSheet: View {
     @State private var exercises: [(name: String, unit: ExerciseUnit, id: UUID)] = []
     @State private var newExerciseName = ""
     @State private var newExerciseUnit: ExerciseUnit = .kg
-    @State private var showingAddExercise = false
+    @State private var showAISearch = false
+    @State private var aiDescription = ""
+    @State private var aiLoading = false
+    @State private var aiError: String?
+    @FocusState private var isExerciseFieldFocused: Bool
 
     var onCreated: (() -> Void)?
 
@@ -27,7 +31,8 @@ struct CreateWorkoutSheet: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollViewReader { proxy in
+                ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Nom de la séance")
@@ -57,7 +62,7 @@ struct CreateWorkoutSheet: View {
                                             .font(.title2)
                                             .frame(width: 50, height: 50)
                                             .background(selectedIcon == icon ? theme.accentColor : DesignTokens.card2)
-                                            .foregroundStyle(selectedIcon == icon ? .black : .white)
+                                            .foregroundStyle(selectedIcon == icon ? .black : .primary)
                                             .clipShape(RoundedRectangle(cornerRadius: 12))
                                     }
                                 }
@@ -137,59 +142,101 @@ struct CreateWorkoutSheet: View {
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
 
-                        if showingAddExercise {
+                        VStack(spacing: 8) {
+                            TextField("Nom de l'exercice", text: $newExerciseName)
+                                .textFieldStyle(.plain)
+                                .font(.subheadline)
+                                .padding(10)
+                                .background(DesignTokens.card2)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .foregroundStyle(.primary)
+                                .focused($isExerciseFieldFocused)
+                                .submitLabel(.done)
+                                .onSubmit { addQuickExercise() }
+
+                            HStack {
+                                ForEach(ExerciseUnit.allCases, id: \.self) { unit in
+                                    Button {
+                                        newExerciseUnit = unit
+                                    } label: {
+                                        Text(unit.rawValue)
+                                            .font(.caption)
+                                            .fontWeight(.semibold)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 8)
+                                            .background(newExerciseUnit == unit ? theme.accentColor : DesignTokens.card2)
+                                            .foregroundStyle(newExerciseUnit == unit ? .black : .primary)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    }
+                                }
+                                Spacer()
+                                Button("Ajouter") { addQuickExercise() }
+                                    .font(.subheadline)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(newExerciseName.trimmingCharacters(in: .whitespaces).isEmpty ? DesignTokens.textSecondary : theme.accentColor)
+                                    .disabled(newExerciseName.trimmingCharacters(in: .whitespaces).isEmpty)
+                            }
+                        }
+                    }
+
+                    // AI search
+                    VStack(alignment: .leading, spacing: 10) {
+                        Button {
+                            withAnimation { showAISearch.toggle() }
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "sparkles")
+                                Text("Decrire un exercice")
+                                    .fontWeight(.semibold)
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(theme.accentColor)
+                        }
+
+                        if showAISearch {
                             VStack(spacing: 12) {
-                                TextField("Nom de l'exercice", text: $newExerciseName)
+                                TextField("Ex: la machine ou on pousse les poids avec les jambes...", text: $aiDescription, axis: .vertical)
                                     .textFieldStyle(.plain)
+                                    .lineLimit(2...4)
                                     .padding()
                                     .background(DesignTokens.card2)
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                                     .foregroundStyle(.primary)
 
-                                HStack {
-                                    ForEach(ExerciseUnit.allCases, id: \.self) { unit in
-                                        Button {
-                                            newExerciseUnit = unit
-                                        } label: {
-                                            Text(unit.rawValue)
-                                                .fontWeight(.semibold)
-                                                .padding(.horizontal, 20)
-                                                .padding(.vertical, 10)
-                                                .background(newExerciseUnit == unit ? theme.accentColor : DesignTokens.card2)
-                                                .foregroundStyle(newExerciseUnit == unit ? .black : .white)
-                                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                Button {
+                                    searchWithAI()
+                                } label: {
+                                    HStack(spacing: 6) {
+                                        if aiLoading {
+                                            ProgressView()
+                                                .tint(.black)
+                                                .scaleEffect(0.8)
                                         }
+                                        Text(aiLoading ? "Recherche..." : "Identifier")
+                                            .fontWeight(.semibold)
                                     }
-                                    Spacer()
-                                    Button("Ajouter") {
-                                        guard !newExerciseName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-                                        exercises.append((name: newExerciseName.trimmingCharacters(in: .whitespaces), unit: newExerciseUnit, id: UUID()))
-                                        newExerciseName = ""
-                                        newExerciseUnit = .kg
-                                        showingAddExercise = false
-                                    }
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(theme.accentColor)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
+                                    .background(
+                                        aiDescription.trimmingCharacters(in: .whitespaces).isEmpty || aiLoading
+                                            ? DesignTokens.card2
+                                            : theme.accentColor
+                                    )
+                                    .foregroundStyle(
+                                        aiDescription.trimmingCharacters(in: .whitespaces).isEmpty || aiLoading
+                                            ? DesignTokens.textSecondary
+                                            : .black
+                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                }
+                                .disabled(aiDescription.trimmingCharacters(in: .whitespaces).isEmpty || aiLoading)
+
+                                if let error = aiError {
+                                    Text(error)
+                                        .font(.caption)
+                                        .foregroundStyle(DesignTokens.destructive)
                                 }
                             }
-                        }
-
-                        Button {
-                            showingAddExercise = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "plus")
-                                Text("Ajouter un exercice")
-                            }
-                            .fontWeight(.semibold)
-                            .foregroundStyle(DesignTokens.textSecondary)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [6]))
-                                    .foregroundStyle(DesignTokens.border)
-                            )
                         }
                     }
 
@@ -205,12 +252,24 @@ struct CreateWorkoutSheet: View {
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                     .disabled(!canCreate)
+                    .id("bottomButton")
                 }
                 .padding()
             }
             .scrollDismissesKeyboard(.interactively)
             .dismissKeyboardOnTap()
+            .onChange(of: isExerciseFieldFocused) { _, focused in
+                if focused {
+                    scrollToBottom(proxy)
+                }
+            }
+            .onChange(of: exercises.count) {
+                if isExerciseFieldFocused {
+                    scrollToBottom(proxy)
+                }
+            }
             .background(DesignTokens.bgPrimary)
+            }
             .navigationTitle("Nouvelle séance")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -225,6 +284,14 @@ struct CreateWorkoutSheet: View {
         .presentationBackground(DesignTokens.bgPrimary)
     }
 
+    private func scrollToBottom(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            withAnimation(.easeOut(duration: 0.25)) {
+                proxy.scrollTo("bottomButton", anchor: .bottom)
+            }
+        }
+    }
+
     private var recommendedExercises: [ExerciseRecommendation] {
         let existing = Set(exercises.map { $0.name.lowercased() })
         return ExerciseRecommendations.suggestions(for: name)
@@ -233,6 +300,36 @@ struct CreateWorkoutSheet: View {
 
     private var canCreate: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty && !exercises.isEmpty
+    }
+
+    private func addQuickExercise() {
+        let trimmed = newExerciseName.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        exercises.append((name: trimmed, unit: newExerciseUnit, id: UUID()))
+        newExerciseName = ""
+        newExerciseUnit = .kg
+    }
+
+    private func searchWithAI() {
+        aiLoading = true
+        aiError = nil
+        Task {
+            do {
+                let result = try await OpenAIService.identifyExercise(description: aiDescription)
+                await MainActor.run {
+                    newExerciseName = result.name
+                    newExerciseUnit = result.unit
+                    aiLoading = false
+                    showAISearch = false
+                    aiDescription = ""
+                }
+            } catch {
+                await MainActor.run {
+                    aiError = "Erreur : \(error.localizedDescription)"
+                    aiLoading = false
+                }
+            }
+        }
     }
 
     private func createWorkout() {

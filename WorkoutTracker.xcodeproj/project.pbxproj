@@ -48,15 +48,14 @@
 		AA000039 /* LogActivitySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000039 /* LogActivitySheet.swift */; };
 		AA000040 /* CreateActivitySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000040 /* CreateActivitySheet.swift */; };
 		AA000041 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000041 /* CalendarView.swift */; };
-		AA000042 /* GymLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000042 /* GymLocation.swift */; };
-		AA000043 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000043 /* LocationManager.swift */; };
-		AA000044 /* LocationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000044 /* LocationSettingsView.swift */; };
 		AA000045 /* CalorieData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000046 /* CalorieData.swift */; };
 		AA000046 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000047 /* HealthKitManager.swift */; };
 		AA000047 /* ProgramTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000048 /* ProgramTemplates.swift */; };
 		AA000048 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000049 /* ConfettiView.swift */; };
 		AA000049 /* RestTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000050 /* RestTimerView.swift */; };
 		AA000050 /* ProgramTemplateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000051 /* ProgramTemplateSheet.swift */; };
+		AA000053 /* ProgramChoiceStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000053 /* ProgramChoiceStep.swift */; };
+		AA000054 /* SessionRecapSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000054 /* SessionRecapSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -101,9 +100,6 @@
 		AB000039 /* LogActivitySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogActivitySheet.swift; sourceTree = "<group>"; };
 		AB000040 /* CreateActivitySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateActivitySheet.swift; sourceTree = "<group>"; };
 		AB000041 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
-		AB000042 /* GymLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymLocation.swift; sourceTree = "<group>"; };
-		AB000043 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
-		AB000044 /* LocationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSettingsView.swift; sourceTree = "<group>"; };
 		AB000045 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB000046 /* CalorieData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieData.swift; sourceTree = "<group>"; };
 		AB000047 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
@@ -112,6 +108,8 @@
 		AB000050 /* RestTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerView.swift; sourceTree = "<group>"; };
 		AB000051 /* ProgramTemplateSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramTemplateSheet.swift; sourceTree = "<group>"; };
 		AB000052 /* WorkoutTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkoutTracker.entitlements; sourceTree = "<group>"; };
+		AB000053 /* ProgramChoiceStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramChoiceStep.swift; sourceTree = "<group>"; };
+		AB000054 /* SessionRecapSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRecapSheet.swift; sourceTree = "<group>"; };
 		AC000001 /* WorkoutTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -167,7 +165,6 @@
 				AB000006 /* SetEntry.swift */,
 				AB000035 /* RunningSession.swift */,
 				AB000036 /* SportActivity.swift */,
-				AB000042 /* GymLocation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -188,24 +185,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		AE000015 /* Running */ = {
-			isa = PBXGroup;
-			children = (
-				AB000037 /* LogRunningSheet.swift */,
-				AB000038 /* CreateRunningTypeSheet.swift */,
-			);
-			path = Running;
-			sourceTree = "<group>";
-		};
-		AE000016 /* Activities */ = {
-			isa = PBXGroup;
-			children = (
-				AB000039 /* LogActivitySheet.swift */,
-				AB000040 /* CreateActivitySheet.swift */,
-			);
-			path = Activities;
-			sourceTree = "<group>";
-		};
 		AE000006 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -214,6 +193,7 @@
 				AB000009 /* NameStep.swift */,
 				AB000010 /* InfoStep.swift */,
 				AB000011 /* FirstWorkoutStep.swift */,
+				AB000053 /* ProgramChoiceStep.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -236,6 +216,7 @@
 				AB000017 /* ExerciseDetail.swift */,
 				AB000018 /* NewLogEntry.swift */,
 				AB000050 /* RestTimerView.swift */,
+				AB000054 /* SessionRecapSheet.swift */,
 			);
 			path = Logger;
 			sourceTree = "<group>";
@@ -256,7 +237,6 @@
 			children = (
 				AB000022 /* SettingsView.swift */,
 				AB000023 /* AccentColorPicker.swift */,
-				AB000044 /* LocationSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -289,12 +269,29 @@
 				AB000032 /* ExerciseRecommendations.swift */,
 				AB000033 /* OpenAIService.swift */,
 				AB000034 /* Secrets.swift */,
-				AB000043 /* LocationManager.swift */,
 				AB000046 /* CalorieData.swift */,
 				AB000047 /* HealthKitManager.swift */,
 				AB000048 /* ProgramTemplates.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		AE000015 /* Running */ = {
+			isa = PBXGroup;
+			children = (
+				AB000037 /* LogRunningSheet.swift */,
+				AB000038 /* CreateRunningTypeSheet.swift */,
+			);
+			path = Running;
+			sourceTree = "<group>";
+		};
+		AE000016 /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				AB000039 /* LogActivitySheet.swift */,
+				AB000040 /* CreateActivitySheet.swift */,
+			);
+			path = Activities;
 			sourceTree = "<group>";
 		};
 		AE000099 /* Products */ = {
@@ -333,7 +330,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					AF000001 = {
 						CreatedOnToolsVersion = 15.0;
@@ -415,15 +412,14 @@
 				AA000039 /* LogActivitySheet.swift in Sources */,
 				AA000040 /* CreateActivitySheet.swift in Sources */,
 				AA000041 /* CalendarView.swift in Sources */,
-				AA000042 /* GymLocation.swift in Sources */,
-				AA000043 /* LocationManager.swift in Sources */,
-				AA000044 /* LocationSettingsView.swift in Sources */,
 				AA000045 /* CalorieData.swift in Sources */,
 				AA000046 /* HealthKitManager.swift in Sources */,
 				AA000047 /* ProgramTemplates.swift in Sources */,
 				AA000048 /* ConfettiView.swift in Sources */,
 				AA000049 /* RestTimerView.swift in Sources */,
 				AA000050 /* ProgramTemplateSheet.swift in Sources */,
+				AA000053 /* ProgramChoiceStep.swift in Sources */,
+				AA000054 /* SessionRecapSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,6 +431,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -465,6 +462,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -488,6 +486,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -498,6 +497,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -528,6 +528,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -544,6 +545,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -557,9 +559,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				CODE_SIGN_ENTITLEMENTS = WorkoutTracker/WorkoutTracker.entitlements;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkoutTracker/Info.plist;
@@ -593,9 +593,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				CODE_SIGN_ENTITLEMENTS = WorkoutTracker/WorkoutTracker.entitlements;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkoutTracker/Info.plist;

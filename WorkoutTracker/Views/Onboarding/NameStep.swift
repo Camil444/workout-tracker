@@ -6,47 +6,43 @@ struct NameStep: View {
     let onNext: () -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 32) {
-                Spacer(minLength: 120)
+        VStack(spacing: 32) {
+            Spacer()
 
-                VStack(spacing: 8) {
-                    Text("Comment tu t'appelles ?")
-                        .font(.system(size: 28, weight: .heavy))
-                        .foregroundStyle(.primary)
-                }
-
-                TextField("Prénom", text: $firstName)
-                    .textFieldStyle(.plain)
-                    .font(.title2)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .background(DesignTokens.card2)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            VStack(spacing: 8) {
+                Text("Comment tu t'appelles ?")
+                    .font(.system(size: 28, weight: .heavy))
                     .foregroundStyle(.primary)
-                    .padding(.horizontal, 40)
-                    .submitLabel(.done)
-
-                Spacer(minLength: 120)
-
-                Button {
-                    onNext()
-                } label: {
-                    Text("Continuer")
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(canContinue ? theme.accentColor : DesignTokens.card2)
-                        .foregroundStyle(canContinue ? .black : DesignTokens.textSecondary)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                }
-                .disabled(!canContinue)
             }
-            .padding(24)
-            .frame(minHeight: UIScreen.main.bounds.height)
+
+            TextField("Prénom", text: $firstName)
+                .textFieldStyle(.plain)
+                .font(.title2)
+                .multilineTextAlignment(.center)
+                .padding()
+                .background(DesignTokens.card2)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .foregroundStyle(.primary)
+                .padding(.horizontal, 40)
+                .submitLabel(.done)
+                .onSubmit { if canContinue { onNext() } }
+
+            Spacer()
+
+            Button {
+                onNext()
+            } label: {
+                Text("Continuer")
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(canContinue ? theme.accentColor : DesignTokens.card2)
+                    .foregroundStyle(canContinue ? .black : DesignTokens.textSecondary)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+            }
+            .disabled(!canContinue)
         }
-        .scrollDismissesKeyboard(.interactively)
-        .dismissKeyboardOnTap()
+        .padding(24)
         .background(DesignTokens.bgPrimary)
     }
 
