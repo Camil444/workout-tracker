@@ -1,6 +1,7 @@
 import Foundation
 
 struct OpenAIService {
+    @MainActor
     static func identifyExercise(description: String) async throws -> (name: String, unit: ExerciseUnit) {
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var request = URLRequest(url: url)

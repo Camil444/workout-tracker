@@ -11,10 +11,19 @@ final class ExerciseLog {
 
     var sets: [SetEntry] {
         get {
-            (try? JSONDecoder().decode([SetEntry].self, from: setsData)) ?? []
+            do {
+                return try JSONDecoder().decode([SetEntry].self, from: setsData)
+            } catch {
+                print("[ExerciseLog] Failed to decode sets: \(error)")
+                return []
+            }
         }
         set {
-            setsData = (try? JSONEncoder().encode(newValue)) ?? Data()
+            do {
+                setsData = try JSONEncoder().encode(newValue)
+            } catch {
+                print("[ExerciseLog] Failed to encode sets: \(error) — keeping previous data")
+            }
         }
     }
 

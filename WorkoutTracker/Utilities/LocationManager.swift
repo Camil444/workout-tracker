@@ -27,6 +27,9 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     func requestCurrentLocation() {
+        guard authorizationStatus == .authorizedWhenInUse || authorizationStatus == .authorizedAlways else {
+            return
+        }
         manager.requestLocation()
     }
 
@@ -64,15 +67,19 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - CLLocationManagerDelegate
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        authorizationStatus = status
+        DispatchQueue.main.async {
+            self.authorizationStatus = status
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentLocation = locations.last
+        DispatchQueue.main.async {
+            self.currentLocation = locations.last
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        // Silently handle
+        print("[LocationManager] Error: \(error.localizedDescription)")
     }
 
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {

@@ -182,7 +182,7 @@ struct SettingsView: View {
                         Text("Version")
                             .foregroundStyle(.white)
                         Spacer()
-                        Text("1.0.0")
+                        Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
                             .foregroundStyle(DesignTokens.textSecondary)
                     }
                 }
