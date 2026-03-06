@@ -1,0 +1,35 @@
+import Foundation
+import SwiftData
+
+@Model
+final class ExerciseLog {
+    var id: UUID
+    var weekNumber: Int
+    var date: Date
+    var setsData: Data
+    var exercise: Exercise?
+
+    var sets: [SetEntry] {
+        get {
+            (try? JSONDecoder().decode([SetEntry].self, from: setsData)) ?? []
+        }
+        set {
+            setsData = (try? JSONEncoder().encode(newValue)) ?? Data()
+        }
+    }
+
+    init(weekNumber: Int, sets: [SetEntry] = []) {
+        self.id = UUID()
+        self.weekNumber = weekNumber
+        self.date = Date()
+        self.setsData = (try? JSONEncoder().encode(sets)) ?? Data()
+    }
+
+    var maxWeight: Double {
+        sets.map(\.weight).max() ?? 0
+    }
+
+    var maxReps: Int {
+        sets.map(\.reps).max() ?? 0
+    }
+}
