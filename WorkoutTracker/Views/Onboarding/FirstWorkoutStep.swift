@@ -161,6 +161,8 @@ struct FirstWorkoutStep: View {
             }
             .padding(24)
         }
+        .scrollDismissesKeyboard(.interactively)
+        .dismissKeyboardOnTap()
         .background(DesignTokens.bgPrimary)
     }
 

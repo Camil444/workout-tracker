@@ -178,6 +178,8 @@ struct CreateWorkoutSheet: View {
                 }
                 .padding()
             }
+            .scrollDismissesKeyboard(.interactively)
+            .dismissKeyboardOnTap()
             .background(DesignTokens.bgPrimary)
             .navigationTitle("Nouvelle séance")
             .navigationBarTitleDisplayMode(.inline)

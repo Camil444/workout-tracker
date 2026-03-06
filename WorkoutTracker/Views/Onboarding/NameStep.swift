@@ -6,41 +6,47 @@ struct NameStep: View {
     let onNext: () -> Void
 
     var body: some View {
-        VStack(spacing: 32) {
-            Spacer()
+        ScrollView {
+            VStack(spacing: 32) {
+                Spacer(minLength: 120)
 
-            VStack(spacing: 8) {
-                Text("Comment tu t'appelles ?")
-                    .font(.system(size: 28, weight: .heavy))
-                    .foregroundStyle(.white)
-            }
+                VStack(spacing: 8) {
+                    Text("Comment tu t'appelles ?")
+                        .font(.system(size: 28, weight: .heavy))
+                        .foregroundStyle(.white)
+                }
 
-            TextField("Prénom", text: $firstName)
-                .textFieldStyle(.plain)
-                .font(.title2)
-                .multilineTextAlignment(.center)
-                .padding()
-                .background(DesignTokens.card2)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .foregroundStyle(.white)
-                .padding(.horizontal, 40)
-
-            Spacer()
-
-            Button {
-                onNext()
-            } label: {
-                Text("Continuer")
-                    .fontWeight(.bold)
-                    .frame(maxWidth: .infinity)
+                TextField("Prénom", text: $firstName)
+                    .textFieldStyle(.plain)
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
                     .padding()
-                    .background(canContinue ? theme.accentColor : DesignTokens.card2)
-                    .foregroundStyle(canContinue ? .black : DesignTokens.textSecondary)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .background(DesignTokens.card2)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 40)
+                    .submitLabel(.done)
+
+                Spacer(minLength: 120)
+
+                Button {
+                    onNext()
+                } label: {
+                    Text("Continuer")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(canContinue ? theme.accentColor : DesignTokens.card2)
+                        .foregroundStyle(canContinue ? .black : DesignTokens.textSecondary)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
+                .disabled(!canContinue)
             }
-            .disabled(!canContinue)
+            .padding(24)
+            .frame(minHeight: UIScreen.main.bounds.height)
         }
-        .padding(24)
+        .scrollDismissesKeyboard(.interactively)
+        .dismissKeyboardOnTap()
         .background(DesignTokens.bgPrimary)
     }
 

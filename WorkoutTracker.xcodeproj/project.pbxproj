@@ -7,37 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA000001 /* WorkoutTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000001; };
-		AA000002 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000002; };
-		AA000003 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000003; };
-		AA000004 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000004; };
-		AA000005 /* ExerciseLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000005; };
-		AA000006 /* SetEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000006; };
-		AA000007 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007; };
-		AA000008 /* WelcomeStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008; };
-		AA000009 /* NameStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009; };
-		AA000010 /* InfoStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000010; };
-		AA000011 /* FirstWorkoutStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000011; };
-		AA000012 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000012; };
-		AA000013 /* WorkoutCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000013; };
-		AA000014 /* LoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000014; };
-		AA000015 /* WorkoutAccordion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000015; };
-		AA000016 /* ExerciseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000016; };
-		AA000017 /* ExerciseDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000017; };
-		AA000018 /* NewLogEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018; };
-		AA000019 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000019; };
-		AA000020 /* SummaryCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000020; };
-		AA000021 /* ExerciseChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000021; };
-		AA000022 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000022; };
-		AA000023 /* AccentColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000023; };
-		AA000024 /* SparklineShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000024; };
-		AA000025 /* CreateWorkoutSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000025; };
-		AA000026 /* AddExerciseSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000026; };
-		AA000027 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000027; };
-		AA000028 /* WorkoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000028; };
-		AA000029 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000029; };
-		AA000030 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000030; };
-		AA000031 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB000031; };
+		AA000001 /* WorkoutTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000001 /* WorkoutTrackerApp.swift */; };
+		AA000002 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000002 /* UserProfile.swift */; };
+		AA000003 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000003 /* Workout.swift */; };
+		AA000004 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000004 /* Exercise.swift */; };
+		AA000005 /* ExerciseLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000005 /* ExerciseLog.swift */; };
+		AA000006 /* SetEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000006 /* SetEntry.swift */; };
+		AA000007 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007 /* OnboardingView.swift */; };
+		AA000008 /* WelcomeStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008 /* WelcomeStep.swift */; };
+		AA000009 /* NameStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009 /* NameStep.swift */; };
+		AA000010 /* InfoStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000010 /* InfoStep.swift */; };
+		AA000011 /* FirstWorkoutStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000011 /* FirstWorkoutStep.swift */; };
+		AA000012 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000012 /* HomeView.swift */; };
+		AA000013 /* WorkoutCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000013 /* WorkoutCard.swift */; };
+		AA000014 /* LoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000014 /* LoggerView.swift */; };
+		AA000015 /* WorkoutAccordion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000015 /* WorkoutAccordion.swift */; };
+		AA000016 /* ExerciseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000016 /* ExerciseRow.swift */; };
+		AA000017 /* ExerciseDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000017 /* ExerciseDetail.swift */; };
+		AA000018 /* NewLogEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018 /* NewLogEntry.swift */; };
+		AA000019 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000019 /* StatsView.swift */; };
+		AA000020 /* SummaryCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000020 /* SummaryCards.swift */; };
+		AA000021 /* ExerciseChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000021 /* ExerciseChart.swift */; };
+		AA000022 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000022 /* SettingsView.swift */; };
+		AA000023 /* AccentColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000023 /* AccentColorPicker.swift */; };
+		AA000024 /* SparklineShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000024 /* SparklineShape.swift */; };
+		AA000025 /* CreateWorkoutSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000025 /* CreateWorkoutSheet.swift */; };
+		AA000026 /* AddExerciseSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000026 /* AddExerciseSheet.swift */; };
+		AA000027 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000027 /* MainTabView.swift */; };
+		AA000028 /* WorkoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000028 /* WorkoutViewModel.swift */; };
+		AA000029 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000029 /* ThemeManager.swift */; };
+		AA000030 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000030 /* Extensions.swift */; };
+		AA000031 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB000031 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -458,9 +458,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Workout Tracker";
@@ -476,6 +478,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.camil.WorkoutTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -489,9 +492,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Workout Tracker";
@@ -507,6 +512,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.camil.WorkoutTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -537,7 +543,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = B2000001 /* Project object */;
 }

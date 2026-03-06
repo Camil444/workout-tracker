@@ -26,6 +26,8 @@ struct LoggerView: View {
             }
             .padding(.top)
         }
+        .scrollDismissesKeyboard(.interactively)
+        .dismissKeyboardOnTap()
         .background(DesignTokens.bgPrimary)
     }
 }

@@ -6,6 +6,12 @@ extension View {
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
+
+    func dismissKeyboardOnTap() -> some View {
+        self.onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+    }
 }
 
 struct DesignTokens {
