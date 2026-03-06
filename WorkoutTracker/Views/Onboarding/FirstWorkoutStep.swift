@@ -64,6 +64,36 @@ struct FirstWorkoutStep: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(DesignTokens.textSecondary)
 
+                    if !recommendedExercises.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Suggestions")
+                                .font(.caption)
+                                .foregroundStyle(DesignTokens.textSecondary)
+                            FlowLayout(spacing: 6) {
+                                ForEach(recommendedExercises) { rec in
+                                    Button {
+                                        if !exercises.contains(where: { $0.name.lowercased() == rec.name.lowercased() }) {
+                                            exercises.append((name: rec.name, unit: rec.unit, id: UUID()))
+                                        }
+                                    } label: {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "plus.circle.fill")
+                                                .font(.caption2)
+                                            Text(rec.name)
+                                                .font(.caption)
+                                        }
+                                        .fontWeight(.medium)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 7)
+                                        .background(DesignTokens.card2)
+                                        .foregroundStyle(.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     ForEach(exercises, id: \.id) { exercise in
                         HStack {
                             Text(exercise.name)
@@ -164,6 +194,12 @@ struct FirstWorkoutStep: View {
         .scrollDismissesKeyboard(.interactively)
         .dismissKeyboardOnTap()
         .background(DesignTokens.bgPrimary)
+    }
+
+    private var recommendedExercises: [ExerciseRecommendation] {
+        let existing = Set(exercises.map { $0.name.lowercased() })
+        return ExerciseRecommendations.suggestions(for: name)
+            .filter { !existing.contains($0.name.lowercased()) }
     }
 
     private var canCreate: Bool {

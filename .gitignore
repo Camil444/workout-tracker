@@ -31,3 +31,6 @@ Pods/
 
 # CLAUDE.md - local only
 CLAUDE.md
+
+# Secrets - never push API keys
+Secrets.swift
