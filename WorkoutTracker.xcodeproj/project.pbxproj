@@ -41,6 +41,13 @@
 		AA000032 /* ExerciseRecommendations.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000032 /* ExerciseRecommendations.swift */; };
 		AA000033 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000033 /* OpenAIService.swift */; };
 		AA000034 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000034 /* Secrets.swift */; };
+		AA000035 /* RunningSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000035 /* RunningSession.swift */; };
+		AA000036 /* SportActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000036 /* SportActivity.swift */; };
+		AA000037 /* LogRunningSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000037 /* LogRunningSheet.swift */; };
+		AA000038 /* CreateRunningTypeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000038 /* CreateRunningTypeSheet.swift */; };
+		AA000039 /* LogActivitySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000039 /* LogActivitySheet.swift */; };
+		AA000040 /* CreateActivitySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000040 /* CreateActivitySheet.swift */; };
+		AA000041 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000041 /* CalendarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +85,13 @@
 		AB000032 /* ExerciseRecommendations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseRecommendations.swift; sourceTree = "<group>"; };
 		AB000033 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		AB000034 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		AB000035 /* RunningSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunningSession.swift; sourceTree = "<group>"; };
+		AB000036 /* SportActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportActivity.swift; sourceTree = "<group>"; };
+		AB000037 /* LogRunningSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogRunningSheet.swift; sourceTree = "<group>"; };
+		AB000038 /* CreateRunningTypeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRunningTypeSheet.swift; sourceTree = "<group>"; };
+		AB000039 /* LogActivitySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogActivitySheet.swift; sourceTree = "<group>"; };
+		AB000040 /* CreateActivitySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateActivitySheet.swift; sourceTree = "<group>"; };
+		AB000041 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		AC000001 /* WorkoutTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -129,6 +143,8 @@
 				AB000004 /* Exercise.swift */,
 				AB000005 /* ExerciseLog.swift */,
 				AB000006 /* SetEntry.swift */,
+				AB000035 /* RunningSession.swift */,
+				AB000036 /* SportActivity.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -140,11 +156,31 @@
 				AE000006 /* Onboarding */,
 				AE000007 /* Home */,
 				AE000008 /* Logger */,
+				AE000015 /* Running */,
+				AE000016 /* Activities */,
 				AE000009 /* Stats */,
 				AE000010 /* Settings */,
 				AE000011 /* Shared */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		AE000015 /* Running */ = {
+			isa = PBXGroup;
+			children = (
+				AB000037 /* LogRunningSheet.swift */,
+				AB000038 /* CreateRunningTypeSheet.swift */,
+			);
+			path = Running;
+			sourceTree = "<group>";
+		};
+		AE000016 /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				AB000039 /* LogActivitySheet.swift */,
+				AB000040 /* CreateActivitySheet.swift */,
+			);
+			path = Activities;
 			sourceTree = "<group>";
 		};
 		AE000006 /* Onboarding */ = {
@@ -186,6 +222,7 @@
 				AB000019 /* StatsView.swift */,
 				AB000020 /* SummaryCards.swift */,
 				AB000021 /* ExerciseChart.swift */,
+				AB000041 /* CalendarView.swift */,
 			);
 			path = Stats;
 			sourceTree = "<group>";
@@ -340,6 +377,13 @@
 				AA000032 /* ExerciseRecommendations.swift in Sources */,
 				AA000033 /* OpenAIService.swift in Sources */,
 				AA000034 /* Secrets.swift in Sources */,
+				AA000035 /* RunningSession.swift in Sources */,
+				AA000036 /* SportActivity.swift in Sources */,
+				AA000037 /* LogRunningSheet.swift in Sources */,
+				AA000038 /* CreateRunningTypeSheet.swift in Sources */,
+				AA000039 /* LogActivitySheet.swift in Sources */,
+				AA000040 /* CreateActivitySheet.swift in Sources */,
+				AA000041 /* CalendarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

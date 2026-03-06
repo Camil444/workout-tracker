@@ -13,7 +13,11 @@ struct WorkoutTrackerApp: App {
                 .environment(workoutViewModel)
                 .preferredColorScheme(.dark)
         }
-        .modelContainer(for: [UserProfile.self, Workout.self, Exercise.self, ExerciseLog.self])
+        .modelContainer(for: [
+            UserProfile.self, Workout.self, Exercise.self, ExerciseLog.self,
+            RunningSessionType.self, RunningLog.self,
+            SportActivity.self, SportActivityLog.self
+        ])
     }
 }
 
