@@ -23,8 +23,9 @@ struct WorkoutAccordion: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            // Header
             Button {
-                withAnimation(.easeInOut(duration: 0.3)) {
+                withAnimation(.snappy(duration: 0.3)) {
                     viewModel.toggleWorkout(workout)
                 }
             } label: {
@@ -52,17 +53,17 @@ struct WorkoutAccordion: View {
                 }
                 .padding()
                 .background(isExpanded ? theme.accentColor : DesignTokens.card1)
-                .clipShape(RoundedRectangle(cornerRadius: isExpanded ? 16 : 16, style: .continuous))
             }
             .buttonStyle(.plain)
 
+            // Content
             if isExpanded {
                 VStack(spacing: 8) {
                     HStack {
                         Spacer()
                         if viewModel.isLogging {
                             Button {
-                                withAnimation { viewModel.cancelLogging() }
+                                withAnimation(.snappy(duration: 0.25)) { viewModel.cancelLogging() }
                             } label: {
                                 Text("Annuler")
                                     .font(.subheadline)
@@ -71,7 +72,7 @@ struct WorkoutAccordion: View {
                             }
                         } else {
                             Button {
-                                withAnimation { viewModel.startLogging() }
+                                withAnimation(.snappy(duration: 0.25)) { viewModel.startLogging() }
                             } label: {
                                 Text("Logger")
                                     .font(.subheadline)
@@ -108,19 +109,12 @@ struct WorkoutAccordion: View {
                 }
                 .padding(12)
                 .background(DesignTokens.card1)
-                .clipShape(
-                    .rect(
-                        topLeadingRadius: 0,
-                        bottomLeadingRadius: 16,
-                        bottomTrailingRadius: 16,
-                        topTrailingRadius: 0
-                    )
-                )
-                .transition(.opacity.combined(with: .move(edge: .top)))
                 .sheet(isPresented: $showAddExercise) {
                     AddExerciseSheet(workout: workout)
                 }
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .animation(.snappy(duration: 0.3), value: isExpanded)
     }
 }

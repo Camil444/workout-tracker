@@ -48,6 +48,9 @@
 		AA000039 /* LogActivitySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000039 /* LogActivitySheet.swift */; };
 		AA000040 /* CreateActivitySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000040 /* CreateActivitySheet.swift */; };
 		AA000041 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000041 /* CalendarView.swift */; };
+		AA000042 /* GymLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000042 /* GymLocation.swift */; };
+		AA000043 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000043 /* LocationManager.swift */; };
+		AA000044 /* LocationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000044 /* LocationSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +95,10 @@
 		AB000039 /* LogActivitySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogActivitySheet.swift; sourceTree = "<group>"; };
 		AB000040 /* CreateActivitySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateActivitySheet.swift; sourceTree = "<group>"; };
 		AB000041 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		AB000042 /* GymLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymLocation.swift; sourceTree = "<group>"; };
+		AB000043 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		AB000044 /* LocationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSettingsView.swift; sourceTree = "<group>"; };
+		AB000045 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AC000001 /* WorkoutTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -123,6 +130,7 @@
 				AE000013 /* ViewModels */,
 				AE000014 /* Utilities */,
 				AB000031 /* Assets.xcassets */,
+				AB000045 /* Info.plist */,
 			);
 			path = WorkoutTracker;
 			sourceTree = "<group>";
@@ -145,6 +153,7 @@
 				AB000006 /* SetEntry.swift */,
 				AB000035 /* RunningSession.swift */,
 				AB000036 /* SportActivity.swift */,
+				AB000042 /* GymLocation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -232,6 +241,7 @@
 			children = (
 				AB000022 /* SettingsView.swift */,
 				AB000023 /* AccentColorPicker.swift */,
+				AB000044 /* LocationSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -262,6 +272,7 @@
 				AB000032 /* ExerciseRecommendations.swift */,
 				AB000033 /* OpenAIService.swift */,
 				AB000034 /* Secrets.swift */,
+				AB000043 /* LocationManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -384,6 +395,9 @@
 				AA000039 /* LogActivitySheet.swift in Sources */,
 				AA000040 /* CreateActivitySheet.swift in Sources */,
 				AA000041 /* CalendarView.swift in Sources */,
+				AA000042 /* GymLocation.swift in Sources */,
+				AA000043 /* LocationManager.swift in Sources */,
+				AA000044 /* LocationSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,6 +535,7 @@
 				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WorkoutTracker/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Workout Tracker";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -555,6 +570,7 @@
 				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WorkoutTracker/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Workout Tracker";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var workoutToDelete: Workout?
     @State private var runningToDelete: RunningSessionType?
     @State private var activityToDelete: SportActivity?
+    @State private var showLocationSettings = false
 
     private var profile: UserProfile? { profiles.first }
 
@@ -52,6 +53,24 @@ struct SettingsView: View {
                                 .fontWeight(.semibold)
                                 .foregroundStyle(DesignTokens.textSecondary)
                             AccentColorPicker(profile: profile)
+                        }
+                    }
+                }
+
+                section("Lieux d'entraînement") {
+                    Button {
+                        showLocationSettings = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "mappin.circle.fill")
+                                .foregroundStyle(theme.accentColor)
+                            Text("Gérer mes lieux")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(DesignTokens.textSecondary)
                         }
                     }
                 }
@@ -171,6 +190,9 @@ struct SettingsView: View {
             .padding(.top)
         }
         .background(DesignTokens.bgPrimary)
+        .sheet(isPresented: $showLocationSettings) {
+            LocationSettingsView()
+        }
         .alert(
             "Supprimer \(workoutToDelete?.name ?? "") ?",
             isPresented: Binding(

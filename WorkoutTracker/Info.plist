@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Workout Tracker utilise ta position pour te notifier quand tu arrives à ta salle de sport.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Workout Tracker utilise ta position en arrière-plan pour te notifier automatiquement quand tu arrives à ta salle de sport.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Workout Tracker utilise ta position en arrière-plan pour te notifier automatiquement quand tu arrives à ta salle de sport.</string>
+</dict>
+</plist>
