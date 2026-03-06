@@ -3,10 +3,14 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Workout Tracker utilise ta position pour te notifier quand tu arrives à ta salle de sport.</string>
+	<string>Workout Tracker utilise ta position pour te notifier quand tu arrives a ta salle de sport.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Workout Tracker utilise ta position en arrière-plan pour te notifier automatiquement quand tu arrives à ta salle de sport.</string>
+	<string>Workout Tracker utilise ta position en arriere-plan pour te notifier automatiquement quand tu arrives a ta salle de sport.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Workout Tracker utilise ta position en arrière-plan pour te notifier automatiquement quand tu arrives à ta salle de sport.</string>
+	<string>Workout Tracker utilise ta position en arriere-plan pour te notifier automatiquement quand tu arrives a ta salle de sport.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Workout Tracker lit ton poids depuis Apple Sante pour estimer tes depenses caloriques.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Workout Tracker enregistre tes depenses caloriques dans Apple Sante apres chaque seance.</string>
 </dict>
 </plist>

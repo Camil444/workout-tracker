@@ -30,7 +30,7 @@ struct AddExerciseSheet: View {
                         .padding()
                         .background(DesignTokens.card2)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                         .submitLabel(.done)
 
                     HStack(spacing: 12) {
@@ -113,7 +113,7 @@ struct AddExerciseSheet: View {
                                     .padding()
                                     .background(DesignTokens.card2)
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(.primary)
 
                                 Button {
                                     searchWithAI()

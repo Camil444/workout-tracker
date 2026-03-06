@@ -6,12 +6,14 @@ struct ActivityCalendarView: View {
     @Query private var exerciseLogs: [ExerciseLog]
     @Query private var runningLogs: [RunningLog]
     @Query private var sportLogs: [SportActivityLog]
+    @Query private var profiles: [UserProfile]
 
     @State private var displayedMonth = Date()
     @State private var selectedDate: Date?
     @State private var showDayDetail = false
 
     private var calendar: Calendar { Calendar.current }
+    private var userWeight: Double { profiles.first?.weight ?? 70 }
 
     private var activityByDay: [String: [DayActivity]] {
         var result: [String: [DayActivity]] = [:]
@@ -26,27 +28,47 @@ struct ActivityCalendarView: View {
         for log in runningLogs {
             let key = dayKey(log.date)
             let name = log.sessionType?.name ?? "Course"
-            result[key, default: []].append(DayActivity(type: .running, name: name, icon: "figure.run", date: log.date, detail: "\(log.durationFormatted) · \(String(format: "%.1f", log.distanceKm))km"))
+            let calories = log.sessionType?.runningType == .interval
+                ? CalorieData.intervalCalories(durationMinutes: log.durationMinutes, weightKg: userWeight)
+                : CalorieData.runningCalories(durationMinutes: log.durationMinutes, distanceKm: log.distanceKm, weightKg: userWeight)
+            result[key, default: []].append(DayActivity(
+                type: .running, name: name, icon: "figure.run", date: log.date,
+                detail: "\(log.durationFormatted) · \(String(format: "%.1f", log.distanceKm))km",
+                calories: calories
+            ))
         }
 
         for log in sportLogs {
             let key = dayKey(log.date)
-            let name = log.activity?.name ?? "Activité"
+            let name = log.activity?.name ?? "Activite"
             let icon = log.activity?.iconName ?? "figure.mixed.cardio"
-            result[key, default: []].append(DayActivity(type: .sport, name: name, icon: icon, date: log.date, detail: log.durationFormatted))
+            let calories = CalorieData.sportCalories(activityName: name, durationMinutes: log.durationMinutes, weightKg: userWeight)
+            result[key, default: []].append(DayActivity(
+                type: .sport, name: name, icon: icon, date: log.date,
+                detail: log.durationFormatted,
+                calories: calories
+            ))
         }
 
-        // Deduplicate musculation entries per workout per day
+        // Deduplicate musculation entries per workout per day & estimate calories
         for (key, activities) in result {
             var seen = Set<String>()
-            result[key] = activities.filter { a in
+            var deduped: [DayActivity] = []
+            for a in activities {
                 if a.type == .musculation {
                     let id = "\(a.type)-\(a.name)"
-                    if seen.contains(id) { return false }
+                    if seen.contains(id) { continue }
                     seen.insert(id)
+                    // Estimate ~60min session for musculation
+                    let cal = CalorieData.musculationCalories(workoutName: a.name, durationMinutes: 60, weightKg: userWeight)
+                    var modified = a
+                    modified.calories = cal
+                    deduped.append(modified)
+                } else {
+                    deduped.append(a)
                 }
-                return true
             }
+            result[key] = deduped
         }
 
         return result
@@ -60,19 +82,19 @@ struct ActivityCalendarView: View {
                     withAnimation { changeMonth(by: -1) }
                 } label: {
                     Image(systemName: "chevron.left")
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                 }
                 Spacer()
                 Text(monthYearString)
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                 Spacer()
                 Button {
                     withAnimation { changeMonth(by: 1) }
                 } label: {
                     Image(systemName: "chevron.right")
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                 }
             }
             .padding(.horizontal)
@@ -137,16 +159,28 @@ struct ActivityCalendarView: View {
             }
             .padding(.horizontal)
 
-            // Day detail
+            // Day detail with calories
             if showDayDetail, let selectedDate,
                let activities = activityByDay[dayKey(selectedDate)], !activities.isEmpty {
+                let totalCal = activities.compactMap(\.calories).reduce(0, +)
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         Text(dayDetailTitle(selectedDate))
                             .font(.subheadline)
                             .fontWeight(.bold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                         Spacer()
+                        if totalCal > 0 {
+                            HStack(spacing: 4) {
+                                Image(systemName: "flame.fill")
+                                    .font(.caption2)
+                                    .foregroundStyle(.orange)
+                                Text("~\(CalorieData.formatCalories(totalCal)) kcal")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.orange)
+                            }
+                        }
                         Button {
                             self.showDayDetail = false
                             self.selectedDate = nil
@@ -166,11 +200,18 @@ struct ActivityCalendarView: View {
                                 Text(activity.name)
                                     .font(.subheadline)
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(.white)
-                                if let detail = activity.detail {
-                                    Text(detail)
-                                        .font(.caption)
-                                        .foregroundStyle(DesignTokens.textSecondary)
+                                    .foregroundStyle(.primary)
+                                HStack(spacing: 8) {
+                                    if let detail = activity.detail {
+                                        Text(detail)
+                                            .font(.caption)
+                                            .foregroundStyle(DesignTokens.textSecondary)
+                                    }
+                                    if let cal = activity.calories, cal > 0 {
+                                        Text("~\(Int(cal)) kcal")
+                                            .font(.caption)
+                                            .foregroundStyle(.orange)
+                                    }
                                 }
                             }
                             Spacer()
@@ -223,9 +264,7 @@ struct ActivityCalendarView: View {
             return []
         }
 
-        // Monday = 1 in our display (ISO)
         var weekday = calendar.component(.weekday, from: firstDay)
-        // Convert Sunday=1..Saturday=7 to Monday=0..Sunday=6
         weekday = (weekday + 5) % 7
 
         var days: [Date?] = Array(repeating: nil, count: weekday)
@@ -261,6 +300,7 @@ struct DayActivity: Identifiable {
     let icon: String
     let date: Date
     var detail: String?
+    var calories: Double?
 
     enum ActivityType {
         case musculation, running, sport

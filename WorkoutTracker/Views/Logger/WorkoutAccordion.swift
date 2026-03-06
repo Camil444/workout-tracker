@@ -1,8 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct WorkoutAccordion: View {
     @Environment(ThemeManager.self) private var theme
     @Environment(WorkoutViewModel.self) private var viewModel
+    @Query private var profiles: [UserProfile]
 
     let workout: Workout
 
@@ -19,6 +21,10 @@ struct WorkoutAccordion: View {
     private var currentWeek: Int {
         let maxWeek = workout.exercises.flatMap(\.logs).map(\.weekNumber).max() ?? 0
         return maxWeek > 0 ? maxWeek : 1
+    }
+
+    private var restTimerSeconds: Int {
+        profiles.first?.restTimerSeconds ?? 90
     }
 
     var body: some View {
@@ -45,6 +51,14 @@ struct WorkoutAccordion: View {
                     }
 
                     Spacer()
+
+                    // Session timer
+                    if isExpanded && viewModel.sessionStartDate != nil {
+                        Text(viewModel.sessionTimerFormatted)
+                            .font(.system(.caption, design: .monospaced))
+                            .fontWeight(.bold)
+                            .foregroundStyle(isExpanded ? .black.opacity(0.7) : theme.accentColor)
+                    }
 
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .font(.caption)
@@ -74,15 +88,24 @@ struct WorkoutAccordion: View {
                             Button {
                                 withAnimation(.snappy(duration: 0.25)) { viewModel.startLogging() }
                             } label: {
-                                Text("Logger")
-                                    .font(.subheadline)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(theme.accentColor)
+                                HStack(spacing: 4) {
+                                    Image(systemName: "pencil.line")
+                                    Text("Logger")
+                                }
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(theme.accentColor)
                             }
                         }
                     }
                     .padding(.horizontal)
                     .padding(.top, 12)
+
+                    // Rest timer (visible when logging)
+                    if viewModel.isLogging {
+                        RestTimerView(defaultSeconds: restTimerSeconds)
+                            .padding(.horizontal)
+                    }
 
                     ForEach(sortedExercises) { exercise in
                         ExerciseRow(exercise: exercise, isLogging: viewModel.isLogging)

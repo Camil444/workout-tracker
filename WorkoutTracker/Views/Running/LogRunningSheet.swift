@@ -6,8 +6,12 @@ struct LogRunningSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ThemeManager.self) private var theme
 
+    @Environment(HealthKitManager.self) private var healthKit
+    @Query private var profiles: [UserProfile]
+
     let sessionType: RunningSessionType
 
+    @State private var showIntervalTemplates = false
     @State private var durationMinutes = ""
     @State private var distanceKm = ""
     @State private var paceMin = ""
@@ -32,7 +36,7 @@ struct LogRunningSheet: View {
                             Text(sessionType.name)
                                 .font(.title3)
                                 .fontWeight(.heavy)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                             Text(sessionType.runningType.rawValue)
                                 .font(.caption)
                                 .foregroundStyle(DesignTokens.textSecondary)
@@ -42,6 +46,22 @@ struct LogRunningSheet: View {
                     if sessionType.runningType == .footing {
                         footingFields
                     } else {
+                        // Template button
+                        Button {
+                            showIntervalTemplates = true
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "doc.text")
+                                Text("Utiliser un template")
+                            }
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(DesignTokens.card2)
+                            .foregroundStyle(theme.accentColor)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
                         intervalFields
                     }
 
@@ -76,6 +96,15 @@ struct LogRunningSheet: View {
         }
         .presentationDetents([.large])
         .presentationBackground(DesignTokens.bgPrimary)
+        .sheet(isPresented: $showIntervalTemplates) {
+            IntervalTemplateSheet { template in
+                warmUpMinutes = "\(template.warmUpMin)"
+                coolDownMinutes = "\(template.coolDownMin)"
+                intervalCount = "\(template.intervals)"
+                workDurationSeconds = "\(template.workSec)"
+                restDurationSeconds = "\(template.restSec)"
+            }
+        }
     }
 
     @ViewBuilder
@@ -117,7 +146,7 @@ struct LogRunningSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(.primary)
         }
     }
 
@@ -127,7 +156,7 @@ struct LogRunningSheet: View {
             Text("Structure de la séance")
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
 
             fieldRow("Échauffement", suffix: "min") {
                 TextField("10", text: $warmUpMinutes)
@@ -151,7 +180,7 @@ struct LogRunningSheet: View {
                             .padding(10)
                             .background(DesignTokens.card2)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                     }
                     VStack(spacing: 4) {
                         Text("Effort (sec)")
@@ -163,7 +192,7 @@ struct LogRunningSheet: View {
                             .padding(10)
                             .background(theme.accentColor.opacity(0.15))
                             .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                     }
                     VStack(spacing: 4) {
                         Text("Repos (sec)")
@@ -175,7 +204,7 @@ struct LogRunningSheet: View {
                             .padding(10)
                             .background(DesignTokens.card2)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                     }
                 }
 
@@ -193,7 +222,7 @@ struct LogRunningSheet: View {
             Text("Résultats")
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
 
             fieldRow("Durée totale", suffix: "min") {
                 TextField("35", text: $durationMinutes)
@@ -285,7 +314,7 @@ struct LogRunningSheet: View {
             HStack {
                 field()
                     .textFieldStyle(.plain)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                 Text(suffix)
                     .foregroundStyle(DesignTokens.textSecondary)
             }
@@ -322,6 +351,21 @@ struct LogRunningSheet: View {
         )
         log.sessionType = sessionType
         modelContext.insert(log)
+
+        // Sync with HealthKit
+        let weight = profiles.first?.weight ?? 70
+        let duration = Double(durationMinutes) ?? 0
+        let distance = dist
+        let calories: Double
+        if sessionType.runningType == .interval {
+            calories = CalorieData.intervalCalories(durationMinutes: duration, weightKg: weight)
+        } else {
+            calories = CalorieData.runningCalories(durationMinutes: duration, distanceKm: distance, weightKg: weight)
+        }
+        if calories > 0 {
+            healthKit.saveWorkout(calories: calories, durationMinutes: duration)
+        }
+
         dismiss()
     }
 }

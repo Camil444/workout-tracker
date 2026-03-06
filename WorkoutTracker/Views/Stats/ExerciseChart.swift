@@ -22,7 +22,7 @@ struct ExerciseChart: View {
                     Text(exercise.name)
                         .font(.headline)
                         .fontWeight(.bold)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                     Text(exercise.unit == .pdc ? "reps max" : "kg max")
                         .font(.caption)
                         .fontWeight(.semibold)

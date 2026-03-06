@@ -19,7 +19,7 @@ struct CreateRunningTypeSheet: View {
                     .padding()
                     .background(DesignTokens.card2)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Type")

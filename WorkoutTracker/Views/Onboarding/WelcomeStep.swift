@@ -15,7 +15,7 @@ struct WelcomeStep: View {
             VStack(spacing: 8) {
                 Text("Bienvenue")
                     .font(.system(size: 36, weight: .heavy))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                 Text("Ton coach de progression")
                     .font(.title3)
                     .foregroundStyle(DesignTokens.textSecondary)

@@ -25,7 +25,7 @@ struct LocationSettingsView: View {
                         Text("Mes lieux")
                             .font(.headline)
                             .fontWeight(.bold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
 
                         if gymLocations.isEmpty {
                             VStack(spacing: 8) {
@@ -50,7 +50,7 @@ struct LocationSettingsView: View {
                                         HStack(spacing: 6) {
                                             Text(location.name)
                                                 .fontWeight(.semibold)
-                                                .foregroundStyle(.white)
+                                                .foregroundStyle(.primary)
                                             if location.isPrimary {
                                                 Text("PRINCIPAL")
                                                     .font(.caption2)
@@ -145,7 +145,7 @@ struct LocationSettingsView: View {
                 Text("Notifications de lieu")
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
             }
 
             switch status {
@@ -231,7 +231,7 @@ struct AddLocationSheet: View {
                         .padding()
                         .background(DesignTokens.card2)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
 
                     // Activity type
                     VStack(alignment: .leading, spacing: 8) {
@@ -264,7 +264,7 @@ struct AddLocationSheet: View {
                     Toggle(isOn: $isPrimary) {
                         Text("Lieu principal")
                             .fontWeight(.semibold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                     }
                     .tint(theme.accentColor)
                     .padding()
@@ -325,7 +325,7 @@ struct AddLocationSheet: View {
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 10)
                                 .background(DesignTokens.card2)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
                     }

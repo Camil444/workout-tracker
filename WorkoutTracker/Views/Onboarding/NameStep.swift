@@ -13,7 +13,7 @@ struct NameStep: View {
                 VStack(spacing: 8) {
                     Text("Comment tu t'appelles ?")
                         .font(.system(size: 28, weight: .heavy))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                 }
 
                 TextField("Prénom", text: $firstName)
@@ -23,7 +23,7 @@ struct NameStep: View {
                     .padding()
                     .background(DesignTokens.card2)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .padding(.horizontal, 40)
                     .submitLabel(.done)
 

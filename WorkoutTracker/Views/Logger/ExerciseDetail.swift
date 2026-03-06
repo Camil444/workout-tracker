@@ -19,7 +19,7 @@ struct ExerciseDetail: View {
                         Text("Semaine \(log.weekNumber)")
                             .font(.subheadline)
                             .fontWeight(.bold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                         Spacer()
                         if exercise.unit == .pdc {
                             Text("\(log.maxReps) reps")
@@ -41,8 +41,20 @@ struct ExerciseDetail: View {
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
                                 .background(DesignTokens.card1)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                    }
+                    // Show notes if present
+                    if !log.notes.isEmpty {
+                        HStack(spacing: 4) {
+                            Image(systemName: "note.text")
+                                .font(.caption2)
+                                .foregroundStyle(DesignTokens.textSecondary)
+                            Text(log.notes)
+                                .font(.caption)
+                                .foregroundStyle(DesignTokens.textSecondary)
+                                .italic()
                         }
                     }
                 }

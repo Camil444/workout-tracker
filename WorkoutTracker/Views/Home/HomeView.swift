@@ -14,6 +14,7 @@ struct HomeView: View {
     @State private var showCreateActivity = false
     @State private var selectedRunning: RunningSessionType?
     @State private var selectedActivity: SportActivity?
+    @State private var showProgramTemplates = false
 
     private var profile: UserProfile? { profiles.first }
 
@@ -32,7 +33,7 @@ struct HomeView: View {
                         .foregroundStyle(DesignTokens.textSecondary)
                     Text("Bonjour, \(profile?.firstName ?? "")")
                         .font(.system(size: 30, weight: .heavy))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                 }
                 .padding(.horizontal)
 
@@ -42,7 +43,22 @@ struct HomeView: View {
                     .padding(.horizontal)
 
                 // SECTION: Musculation
-                sectionHeader("Musculation", icon: "dumbbell.fill")
+                HStack {
+                    sectionHeader("Musculation", icon: "dumbbell.fill")
+                    Spacer()
+                    Button {
+                        showProgramTemplates = true
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "doc.text")
+                            Text("Programmes")
+                        }
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(theme.accentColor)
+                    }
+                    .padding(.trailing)
+                }
 
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(workouts) { workout in
@@ -108,6 +124,7 @@ struct HomeView: View {
             .padding(.bottom, 20)
         }
         .background(DesignTokens.bgPrimary)
+        .sheet(isPresented: $showProgramTemplates) { ProgramTemplateSheet() }
         .sheet(isPresented: $showCreateWorkout) { CreateWorkoutSheet() }
         .sheet(isPresented: $showCreateRunning) { CreateRunningTypeSheet() }
         .sheet(isPresented: $showCreateActivity) { CreateActivitySheet() }
@@ -128,7 +145,7 @@ struct HomeView: View {
             Text(title)
                 .font(.title3)
                 .fontWeight(.bold)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
         }
         .padding(.horizontal)
         .padding(.top, 4)
@@ -146,7 +163,7 @@ struct RunningCard: View {
             HStack(alignment: .top) {
                 Image(systemName: session.runningType == .footing ? "figure.run" : "bolt.horizontal.fill")
                     .font(.title2)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .frame(width: 44, height: 44)
                     .background(DesignTokens.card2)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -172,7 +189,7 @@ struct RunningCard: View {
                 Text(session.name)
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                 Text("\(session.logs.count) sessions · \(session.runningType.rawValue)")
                     .font(.caption)
                     .foregroundStyle(DesignTokens.textSecondary)
@@ -196,7 +213,7 @@ struct ActivityCard: View {
             HStack(alignment: .top) {
                 Image(systemName: activity.iconName)
                     .font(.title2)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .frame(width: 44, height: 44)
                     .background(DesignTokens.card2)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -222,7 +239,7 @@ struct ActivityCard: View {
                 Text(activity.name)
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                 Text("\(activity.logs.count) sessions")
                     .font(.caption)
                     .foregroundStyle(DesignTokens.textSecondary)

@@ -1,7 +1,7 @@
 import SwiftUI
 
 extension View {
-    func cardStyle(cornerRadius: CGFloat = 20, backgroundColor: Color = Color(hex: "#1A1A1A")) -> some View {
+    func cardStyle(cornerRadius: CGFloat = 20, backgroundColor: Color = DesignTokens.card1) -> some View {
         self
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
@@ -15,11 +15,11 @@ extension View {
 }
 
 struct DesignTokens {
-    static let bgPrimary = Color.black
-    static let card1 = Color(hex: "#1A1A1A")
-    static let card2 = Color(hex: "#2A2A2A")
-    static let textPrimary = Color.white
-    static let textSecondary = Color(hex: "#888888")
-    static let border = Color(hex: "#333333")
+    static let bgPrimary = Color(.systemBackground)
+    static let card1 = Color(.secondarySystemBackground)
+    static let card2 = Color(.tertiarySystemBackground)
+    static let textPrimary = Color.primary
+    static let textSecondary = Color.secondary
+    static let border = Color(.separator)
     static let destructive = Color(hex: "#FF4444")
 }

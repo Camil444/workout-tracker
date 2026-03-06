@@ -24,7 +24,7 @@ struct ExerciseRow: View {
                             Text(exercise.name)
                                 .font(.subheadline)
                                 .fontWeight(.bold)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                             if exercise.unit == .pdc {
                                 Text("PDC")
                                     .font(.caption2)

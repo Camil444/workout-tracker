@@ -6,6 +6,9 @@ struct LogActivitySheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ThemeManager.self) private var theme
 
+    @Environment(HealthKitManager.self) private var healthKit
+    @Query private var profiles: [UserProfile]
+
     let activity: SportActivity
 
     @State private var durationMinutes = ""
@@ -22,7 +25,7 @@ struct LogActivitySheet: View {
                         Text(activity.name)
                             .font(.title3)
                             .fontWeight(.heavy)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -34,7 +37,7 @@ struct LogActivitySheet: View {
                             TextField("60", text: $durationMinutes)
                                 .textFieldStyle(.plain)
                                 .keyboardType(.numberPad)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                             Text("min")
                                 .foregroundStyle(DesignTokens.textSecondary)
                         }
@@ -54,7 +57,7 @@ struct LogActivitySheet: View {
                             .padding()
                             .background(DesignTokens.card2)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                     }
 
                     Button {
@@ -102,6 +105,15 @@ struct LogActivitySheet: View {
         )
         log.activity = activity
         modelContext.insert(log)
+
+        // Sync with HealthKit
+        let weight = profiles.first?.weight ?? 70
+        let duration = Double(durationMinutes) ?? 0
+        let calories = CalorieData.sportCalories(activityName: activity.name, durationMinutes: duration, weightKg: weight)
+        if calories > 0 {
+            healthKit.saveWorkout(calories: calories, durationMinutes: duration)
+        }
+
         dismiss()
     }
 }

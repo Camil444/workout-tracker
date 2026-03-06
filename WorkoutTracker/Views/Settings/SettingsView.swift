@@ -19,19 +19,19 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text("Paramètres")
+                Text("Parametres")
                     .font(.system(size: 30, weight: .heavy))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .padding(.horizontal)
 
                 if let profile {
                     section("Profil") {
                         VStack(spacing: 12) {
-                            profileField("Prénom", text: Binding(
+                            profileField("Prenom", text: Binding(
                                 get: { profile.firstName },
                                 set: { profile.firstName = $0 }
                             ))
-                            profileNumberField("Âge", value: Binding(
+                            profileNumberField("Age", value: Binding(
                                 get: { profile.age.map(String.init) ?? "" },
                                 set: { profile.age = Int($0) }
                             ), suffix: "ans")
@@ -47,26 +47,75 @@ struct SettingsView: View {
                     }
 
                     section("Apparence") {
+                        VStack(alignment: .leading, spacing: 16) {
+                            // Dark/Light mode toggle
+                            HStack {
+                                Image(systemName: profile.isDarkMode ? "moon.fill" : "sun.max.fill")
+                                    .foregroundStyle(theme.accentColor)
+                                Text("Mode sombre")
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Toggle("", isOn: Binding(
+                                    get: { profile.isDarkMode },
+                                    set: {
+                                        profile.isDarkMode = $0
+                                        theme.isDarkMode = $0
+                                    }
+                                ))
+                                .tint(theme.accentColor)
+                            }
+
+                            Divider().background(DesignTokens.border)
+
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Couleur d'accent")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(DesignTokens.textSecondary)
+                                AccentColorPicker(profile: profile)
+                            }
+                        }
+                    }
+
+                    section("Timer de repos") {
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Couleur d'accent")
+                            Text("Duree par defaut : \(profile.restTimerSeconds)s")
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(DesignTokens.textSecondary)
-                            AccentColorPicker(profile: profile)
+                                .foregroundStyle(.primary)
+                            Slider(
+                                value: Binding(
+                                    get: { Double(profile.restTimerSeconds) },
+                                    set: { profile.restTimerSeconds = Int($0) }
+                                ),
+                                in: 15...300,
+                                step: 15
+                            )
+                            .tint(theme.accentColor)
+                            HStack {
+                                Text("15s")
+                                    .font(.caption2)
+                                    .foregroundStyle(DesignTokens.textSecondary)
+                                Spacer()
+                                Text("5min")
+                                    .font(.caption2)
+                                    .foregroundStyle(DesignTokens.textSecondary)
+                            }
                         }
                     }
                 }
 
-                section("Lieux d'entraînement") {
+                section("Lieux d'entrainement") {
                     Button {
                         showLocationSettings = true
                     } label: {
                         HStack {
                             Image(systemName: "mappin.circle.fill")
                                 .foregroundStyle(theme.accentColor)
-                            Text("Gérer mes lieux")
+                            Text("Gerer mes lieux")
                                 .fontWeight(.semibold)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                             Spacer()
                             Image(systemName: "chevron.right")
                                 .font(.caption)
@@ -75,21 +124,24 @@ struct SettingsView: View {
                     }
                 }
 
-                section("Séances") {
+                section("Seances") {
                     if workouts.isEmpty {
-                        Text("Aucune séance")
+                        Text("Aucune seance")
                             .font(.subheadline)
                             .foregroundStyle(DesignTokens.textSecondary)
                     } else {
                         VStack(spacing: 8) {
                             ForEach(workouts) { workout in
                                 HStack {
+                                    Image(systemName: "line.3.horizontal")
+                                        .foregroundStyle(DesignTokens.textSecondary)
+                                        .font(.caption)
                                     Image(systemName: workout.iconName)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(.primary)
                                         .frame(width: 32)
                                     Text(workout.name)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(.primary)
                                     Spacer()
                                     Text("\(workout.exercises.count) exos")
                                         .font(.caption)
@@ -105,11 +157,14 @@ struct SettingsView: View {
                                 .background(DesignTokens.card2)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
+                            .onMove { from, to in
+                                reorderWorkouts(from: from, to: to)
+                            }
                         }
                     }
                 }
 
-                section("Courses à pied") {
+                section("Courses a pied") {
                     if runningSessions.isEmpty {
                         Text("Aucune course")
                             .font(.subheadline)
@@ -119,11 +174,11 @@ struct SettingsView: View {
                             ForEach(runningSessions) { session in
                                 HStack {
                                     Image(systemName: session.runningType == .footing ? "figure.run" : "bolt.horizontal.fill")
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(.primary)
                                         .frame(width: 32)
                                     Text(session.name)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(.primary)
                                     Spacer()
                                     Text("\(session.logs.count) sessions")
                                         .font(.caption)
@@ -143,9 +198,9 @@ struct SettingsView: View {
                     }
                 }
 
-                section("Activités") {
+                section("Activites") {
                     if sportActivities.isEmpty {
-                        Text("Aucune activité")
+                        Text("Aucune activite")
                             .font(.subheadline)
                             .foregroundStyle(DesignTokens.textSecondary)
                     } else {
@@ -153,11 +208,11 @@ struct SettingsView: View {
                             ForEach(sportActivities) { activity in
                                 HStack {
                                     Image(systemName: activity.iconName)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(.primary)
                                         .frame(width: 32)
                                     Text(activity.name)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(.primary)
                                     Spacer()
                                     Text("\(activity.logs.count) sessions")
                                         .font(.caption)
@@ -177,10 +232,10 @@ struct SettingsView: View {
                     }
                 }
 
-                section("À propos") {
+                section("A propos") {
                     HStack {
                         Text("Version")
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                         Spacer()
                         Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
                             .foregroundStyle(DesignTokens.textSecondary)
@@ -208,7 +263,7 @@ struct SettingsView: View {
                 }
             }
         } message: {
-            Text("Cette action est irréversible. Toutes les données de cette séance (exercices, historique) seront définitivement perdues.")
+            Text("Cette action est irreversible. Toutes les donnees de cette seance (exercices, historique) seront definitivement perdues.")
         }
         .alert(
             "Supprimer \(runningToDelete?.name ?? "") ?",
@@ -225,7 +280,7 @@ struct SettingsView: View {
                 }
             }
         } message: {
-            Text("Cette action est irréversible. Toutes les sessions de course seront supprimées.")
+            Text("Cette action est irreversible. Toutes les sessions de course seront supprimees.")
         }
         .alert(
             "Supprimer \(activityToDelete?.name ?? "") ?",
@@ -242,7 +297,15 @@ struct SettingsView: View {
                 }
             }
         } message: {
-            Text("Cette action est irréversible. Toutes les sessions de cette activité seront supprimées.")
+            Text("Cette action est irreversible. Toutes les sessions de cette activite seront supprimees.")
+        }
+    }
+
+    private func reorderWorkouts(from source: IndexSet, to destination: Int) {
+        var reordered = workouts
+        reordered.move(fromOffsets: source, toOffset: destination)
+        for (index, workout) in reordered.enumerated() {
+            workout.sortOrder = index
         }
     }
 
@@ -252,7 +315,7 @@ struct SettingsView: View {
             Text(title)
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .padding(.horizontal)
             content()
                 .padding()
@@ -269,7 +332,7 @@ struct SettingsView: View {
                 .frame(width: 70, alignment: .leading)
             TextField(label, text: text)
                 .textFieldStyle(.plain)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
         }
         .padding()
         .background(DesignTokens.card2)
@@ -284,7 +347,7 @@ struct SettingsView: View {
             TextField(label, text: value)
                 .textFieldStyle(.plain)
                 .keyboardType(.numberPad)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
             Text(suffix)
                 .foregroundStyle(DesignTokens.textSecondary)
         }
@@ -301,7 +364,7 @@ struct SettingsView: View {
             TextField(label, text: value)
                 .textFieldStyle(.plain)
                 .keyboardType(.decimalPad)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
             Text(suffix)
                 .foregroundStyle(DesignTokens.textSecondary)
         }

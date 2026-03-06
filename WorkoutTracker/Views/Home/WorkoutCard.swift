@@ -10,7 +10,7 @@ struct WorkoutCard: View {
             HStack(alignment: .top) {
                 Image(systemName: workout.iconName)
                     .font(.title2)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .frame(width: 44, height: 44)
                     .background(DesignTokens.card2)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -40,7 +40,7 @@ struct WorkoutCard: View {
                 Text(workout.name)
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                 Text("\(workout.exercises.count) exos")
                     .font(.caption)
                     .foregroundStyle(DesignTokens.textSecondary)

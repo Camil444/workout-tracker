@@ -19,7 +19,7 @@ struct FirstWorkoutStep: View {
             VStack(alignment: .leading, spacing: 24) {
                 Text("Crée ta première séance")
                     .font(.system(size: 28, weight: .heavy))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -32,7 +32,7 @@ struct FirstWorkoutStep: View {
                         .padding()
                         .background(DesignTokens.card2)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -86,7 +86,7 @@ struct FirstWorkoutStep: View {
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 7)
                                         .background(DesignTokens.card2)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(.primary)
                                         .clipShape(RoundedRectangle(cornerRadius: 8))
                                     }
                                 }
@@ -126,7 +126,7 @@ struct FirstWorkoutStep: View {
                                 .padding()
                                 .background(DesignTokens.card2)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
 
                             HStack {
                                 ForEach(ExerciseUnit.allCases, id: \.self) { unit in

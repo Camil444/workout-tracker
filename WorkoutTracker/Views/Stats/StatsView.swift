@@ -34,7 +34,7 @@ struct StatsView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Stats")
                         .font(.system(size: 30, weight: .heavy))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                     Text(selectedTab == .progression
                          ? "Progression sur \(totalWeeks) semaines"
                          : "Ton activité sportive")

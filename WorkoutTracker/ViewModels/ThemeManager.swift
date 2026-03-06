@@ -4,9 +4,14 @@ import SwiftData
 @Observable
 final class ThemeManager {
     var accentHex: String = "#E8FF00"
+    var isDarkMode: Bool = true
 
     var accentColor: Color {
         Color(hex: accentHex)
+    }
+
+    var colorScheme: ColorScheme {
+        isDarkMode ? .dark : .light
     }
 
     static let availableColors: [(name: String, hex: String)] = [

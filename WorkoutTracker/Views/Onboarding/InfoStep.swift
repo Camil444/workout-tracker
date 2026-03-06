@@ -18,7 +18,7 @@ struct InfoStep: View {
                 VStack(spacing: 8) {
                     Text("Quelques infos sur toi")
                         .font(.system(size: 28, weight: .heavy))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                     Text("Ces informations sont optionnelles")
                         .font(.subheadline)
                         .foregroundStyle(DesignTokens.textSecondary)
@@ -78,7 +78,7 @@ private struct InfoField: View {
             TextField(placeholder, text: $text)
                 .textFieldStyle(.plain)
                 .keyboardType(.numberPad)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
             Text(suffix)
                 .foregroundStyle(DesignTokens.textSecondary)
         }

@@ -10,7 +10,7 @@ struct LoggerView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Logger")
                         .font(.system(size: 30, weight: .heavy))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                     Text("Sélectionne une séance")
                         .font(.subheadline)
                         .foregroundStyle(DesignTokens.textSecondary)

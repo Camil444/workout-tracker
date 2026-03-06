@@ -9,6 +9,8 @@ final class UserProfile {
     var height: Double?
     var accentColor: String
     var hasCompletedOnboarding: Bool
+    var isDarkMode: Bool
+    var restTimerSeconds: Int
 
     init(
         firstName: String = "",
@@ -16,7 +18,9 @@ final class UserProfile {
         weight: Double? = nil,
         height: Double? = nil,
         accentColor: String = "#E8FF00",
-        hasCompletedOnboarding: Bool = false
+        hasCompletedOnboarding: Bool = false,
+        isDarkMode: Bool = true,
+        restTimerSeconds: Int = 90
     ) {
         self.firstName = firstName
         self.age = age
@@ -24,5 +28,7 @@ final class UserProfile {
         self.height = height
         self.accentColor = accentColor
         self.hasCompletedOnboarding = hasCompletedOnboarding
+        self.isDarkMode = isDarkMode
+        self.restTimerSeconds = restTimerSeconds
     }
 }

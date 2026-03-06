@@ -4,11 +4,14 @@ import SwiftData
 struct NewLogEntry: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ThemeManager.self) private var theme
+    @Environment(WorkoutViewModel.self) private var viewModel
+    @Query private var profiles: [UserProfile]
 
     let exercise: Exercise
     let onSave: () -> Void
 
     @State private var sets: [EditableSet]
+    @State private var notes = ""
 
     init(exercise: Exercise, onSave: @escaping () -> Void) {
         self.exercise = exercise
@@ -23,7 +26,7 @@ struct NewLogEntry: View {
             Text("Semaine \(exercise.nextWeekNumber)")
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
 
             ForEach(Array(sets.enumerated()), id: \.element.id) { index, _ in
                 HStack(spacing: 8) {
@@ -39,7 +42,7 @@ struct NewLogEntry: View {
                         .padding(10)
                         .background(DesignTokens.card1)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                         .frame(width: 70)
 
                     if exercise.unit == .kg {
@@ -51,7 +54,7 @@ struct NewLogEntry: View {
                             .padding(10)
                             .background(DesignTokens.card1)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                             .frame(width: 80)
                         Text("kg")
                             .font(.caption)
@@ -75,13 +78,23 @@ struct NewLogEntry: View {
                 }
             }
 
+            // Notes field
+            TextField("Notes (fatigue, sensations...)", text: $notes, axis: .vertical)
+                .textFieldStyle(.plain)
+                .font(.caption)
+                .lineLimit(1...3)
+                .padding(10)
+                .background(DesignTokens.card1)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(.primary)
+
             HStack(spacing: 12) {
                 Button {
                     sets.append(EditableSet())
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "plus")
-                        Text("Série")
+                        Text("Serie")
                     }
                     .font(.subheadline)
                     .fontWeight(.semibold)
@@ -108,7 +121,6 @@ struct NewLogEntry: View {
                         .foregroundStyle(.black)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .sensoryFeedback(.success, trigger: false)
             }
         }
         .padding()
@@ -124,9 +136,17 @@ struct NewLogEntry: View {
         }
         guard !entries.isEmpty else { return }
 
-        let log = ExerciseLog(weekNumber: exercise.nextWeekNumber, sets: entries)
+        // Check for PR before saving
+        viewModel.checkForPR(exercise: exercise, newSets: entries)
+
+        let log = ExerciseLog(weekNumber: exercise.nextWeekNumber, sets: entries, notes: notes.trimmingCharacters(in: .whitespaces))
         log.exercise = exercise
         modelContext.insert(log)
+
+        // Auto-start rest timer
+        let restSeconds = profiles.first?.restTimerSeconds ?? 90
+        viewModel.startRestTimer(seconds: restSeconds)
+
         onSave()
     }
 }

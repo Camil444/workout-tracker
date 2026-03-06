@@ -51,6 +51,12 @@
 		AA000042 /* GymLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000042 /* GymLocation.swift */; };
 		AA000043 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000043 /* LocationManager.swift */; };
 		AA000044 /* LocationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000044 /* LocationSettingsView.swift */; };
+		AA000045 /* CalorieData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000046 /* CalorieData.swift */; };
+		AA000046 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000047 /* HealthKitManager.swift */; };
+		AA000047 /* ProgramTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000048 /* ProgramTemplates.swift */; };
+		AA000048 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000049 /* ConfettiView.swift */; };
+		AA000049 /* RestTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000050 /* RestTimerView.swift */; };
+		AA000050 /* ProgramTemplateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000051 /* ProgramTemplateSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -99,6 +105,13 @@
 		AB000043 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		AB000044 /* LocationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSettingsView.swift; sourceTree = "<group>"; };
 		AB000045 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AB000046 /* CalorieData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieData.swift; sourceTree = "<group>"; };
+		AB000047 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		AB000048 /* ProgramTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramTemplates.swift; sourceTree = "<group>"; };
+		AB000049 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
+		AB000050 /* RestTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerView.swift; sourceTree = "<group>"; };
+		AB000051 /* ProgramTemplateSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramTemplateSheet.swift; sourceTree = "<group>"; };
+		AB000052 /* WorkoutTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkoutTracker.entitlements; sourceTree = "<group>"; };
 		AC000001 /* WorkoutTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -131,6 +144,7 @@
 				AE000014 /* Utilities */,
 				AB000031 /* Assets.xcassets */,
 				AB000045 /* Info.plist */,
+				AB000052 /* WorkoutTracker.entitlements */,
 			);
 			path = WorkoutTracker;
 			sourceTree = "<group>";
@@ -221,6 +235,7 @@
 				AB000016 /* ExerciseRow.swift */,
 				AB000017 /* ExerciseDetail.swift */,
 				AB000018 /* NewLogEntry.swift */,
+				AB000050 /* RestTimerView.swift */,
 			);
 			path = Logger;
 			sourceTree = "<group>";
@@ -252,6 +267,8 @@
 				AB000024 /* SparklineShape.swift */,
 				AB000025 /* CreateWorkoutSheet.swift */,
 				AB000026 /* AddExerciseSheet.swift */,
+				AB000049 /* ConfettiView.swift */,
+				AB000051 /* ProgramTemplateSheet.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -273,6 +290,9 @@
 				AB000033 /* OpenAIService.swift */,
 				AB000034 /* Secrets.swift */,
 				AB000043 /* LocationManager.swift */,
+				AB000046 /* CalorieData.swift */,
+				AB000047 /* HealthKitManager.swift */,
+				AB000048 /* ProgramTemplates.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -398,6 +418,12 @@
 				AA000042 /* GymLocation.swift in Sources */,
 				AA000043 /* LocationManager.swift in Sources */,
 				AA000044 /* LocationSettingsView.swift in Sources */,
+				AA000045 /* CalorieData.swift in Sources */,
+				AA000046 /* HealthKitManager.swift in Sources */,
+				AA000047 /* ProgramTemplates.swift in Sources */,
+				AA000048 /* ConfettiView.swift in Sources */,
+				AA000049 /* RestTimerView.swift in Sources */,
+				AA000050 /* ProgramTemplateSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,6 +557,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = WorkoutTracker/WorkoutTracker.entitlements;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_PREVIEWS = YES;
@@ -546,7 +573,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.camil.WorkoutTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -566,6 +593,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = WorkoutTracker/WorkoutTracker.entitlements;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 5L5FT3DLRP;
 				ENABLE_PREVIEWS = YES;
@@ -581,7 +609,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.camil.WorkoutTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
