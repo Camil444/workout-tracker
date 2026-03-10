@@ -10,6 +10,7 @@ struct ExerciseDetail: View {
     let onLogSaved: () -> Void
 
     @State private var showDeleteConfirmation = false
+    @State private var logToDelete: ExerciseLog?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -31,6 +32,13 @@ struct ExerciseDetail: View {
                                 .font(.subheadline)
                                 .fontWeight(.bold)
                                 .foregroundStyle(theme.accentColor)
+                        }
+                        Button {
+                            logToDelete = log
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.caption)
+                                .foregroundStyle(DesignTokens.destructive.opacity(0.6))
                         }
                     }
                     FlowLayout(spacing: 8) {
@@ -83,6 +91,23 @@ struct ExerciseDetail: View {
                 }
             } message: {
                 Text("Cette action supprimera l'exercice et tout son historique.")
+            }
+            .alert(
+                "Supprimer Semaine \(logToDelete?.weekNumber ?? 0) ?",
+                isPresented: Binding(
+                    get: { logToDelete != nil },
+                    set: { if !$0 { logToDelete = nil } }
+                )
+            ) {
+                Button("Annuler", role: .cancel) { logToDelete = nil }
+                Button("Supprimer", role: .destructive) {
+                    if let log = logToDelete {
+                        modelContext.delete(log)
+                        logToDelete = nil
+                    }
+                }
+            } message: {
+                Text("Les donnees de cette semaine seront supprimees.")
             }
         }
     }

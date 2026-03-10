@@ -14,7 +14,7 @@ App iOS native en SwiftUI pour suivre ses performances en musculation, course a 
 
 - **Onboarding** : choix de programme (PPL, Upper/Lower, Full Body, Bro Split) avec seances pre-remplies et personnalisables
 - **Accueil** : grille des seances musculation, course a pied et activites avec confirmation avant demarrage
-- **Logger** : systeme accordeon avec timer de session, timer de repos, saisie des series (reps x poids), detection de PR avec celebration
+- **Logger** : systeme accordeon avec timer de session, timer de repos (son + notification), saisie des series (reps x poids), detection de PR avec celebration, suppression de logs individuels
 - **Stats** : graphiques de progression par exercice, calendrier d'activite, cartes resume
 - **Course a pied** : suivi footing et fractionne (duree, distance, vitesse)
 - **Activites** : suivi d'activites sportives personnalisees
@@ -27,6 +27,7 @@ App iOS native en SwiftUI pour suivre ses performances en musculation, course a 
 - Couleur d'accent personnalisable (defaut: jaune-vert fluo #E8FF00)
 - Typographie SF Pro bold, interface minimaliste
 - Animations fluides (accordeons, transitions, confetti PR)
+- Session et timers persistent en arriere-plan (UserDefaults)
 
 ## Architecture
 

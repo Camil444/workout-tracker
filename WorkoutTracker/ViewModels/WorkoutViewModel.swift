@@ -1,5 +1,7 @@
 import SwiftUI
 import SwiftData
+import AudioToolbox
+import UserNotifications
 
 @Observable
 final class WorkoutViewModel {
@@ -21,6 +23,7 @@ final class WorkoutViewModel {
     var restTimerRemaining: Int = 0
     var isRestTimerRunning: Bool = false
     private var restTimer: Timer?
+    private var restTimerEndDate: Date?
 
     // PR celebration
     var showPRCelebration: Bool = false
@@ -34,6 +37,18 @@ final class WorkoutViewModel {
     var lastSessionExerciseCount: Int = 0
     var sessionFeeling: String = ""
 
+    // MARK: - Persistence Keys
+    private let kSessionStartDate = "session_startDate"
+    private let kSessionActive = "session_isActive"
+    private let kSessionWorkoutID = "session_workoutID"
+    private let kRestTimerEndDate = "rest_timerEndDate"
+    private let kRestTimerTotal = "rest_timerTotal"
+
+    init() {
+        requestNotificationPermission()
+        restoreSessionIfNeeded()
+    }
+
     func navigateToWorkout(_ workout: Workout) {
         expandedWorkoutID = workout.id
         expandedExerciseID = nil
@@ -46,13 +61,10 @@ final class WorkoutViewModel {
             expandedWorkoutID = nil
             expandedExerciseID = nil
             isLogging = false
-            if isSessionActive {
-                // Ne pas stopper la session quand on ferme l'accordion
-            }
         } else {
             expandedWorkoutID = workout.id
             expandedExerciseID = nil
-            isLogging = false
+            isLogging = isSessionActive
         }
     }
 
@@ -70,6 +82,7 @@ final class WorkoutViewModel {
         isSessionActive = true
         isLogging = true
         startSessionTimer()
+        persistSession()
     }
 
     func startLogging() {
@@ -94,6 +107,7 @@ final class WorkoutViewModel {
         stopSessionTimer()
         showEndConfirmation = false
         showSessionRecap = true
+        clearPersistedSession()
     }
 
     func dismissRecap() {
@@ -104,8 +118,10 @@ final class WorkoutViewModel {
     // MARK: - Session Timer
 
     private func startSessionTimer() {
-        guard sessionStartDate == nil else { return }
-        sessionStartDate = Date()
+        if sessionStartDate == nil {
+            sessionStartDate = Date()
+        }
+        sessionTimer?.invalidate()
         sessionTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             DispatchQueue.main.async {
                 guard let self, let start = self.sessionStartDate else { return }
@@ -148,17 +164,23 @@ final class WorkoutViewModel {
         restTimerTotal = seconds
         restTimerRemaining = seconds
         isRestTimerRunning = true
+        restTimerEndDate = Date().addingTimeInterval(Double(seconds))
         restTimer?.invalidate()
         restTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             DispatchQueue.main.async {
                 guard let self else { return }
                 if self.restTimerRemaining > 0 {
                     self.restTimerRemaining -= 1
+                    if self.restTimerRemaining == 0 {
+                        self.onRestTimerFinished()
+                    }
                 } else {
                     self.stopRestTimer()
                 }
             }
         }
+        persistRestTimer()
+        scheduleRestTimerNotification(seconds: seconds)
     }
 
     func stopRestTimer() {
@@ -166,11 +188,149 @@ final class WorkoutViewModel {
         restTimer = nil
         isRestTimerRunning = false
         restTimerRemaining = 0
+        restTimerEndDate = nil
+        clearPersistedRestTimer()
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["restTimerEnd"])
+    }
+
+    private func onRestTimerFinished() {
+        // Play sound
+        AudioServicesPlaySystemSound(1007) // Tock sound
+        // Vibrate
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+        stopRestTimer()
     }
 
     var restTimerProgress: Double {
         guard restTimerTotal > 0 else { return 0 }
         return Double(restTimerTotal - restTimerRemaining) / Double(restTimerTotal)
+    }
+
+    // MARK: - Notifications
+
+    private func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+    }
+
+    private func scheduleRestTimerNotification(seconds: Int) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["restTimerEnd"])
+        let content = UNMutableNotificationContent()
+        content.title = "Repos termine"
+        content.body = "C'est reparti ! Lance ta prochaine serie."
+        content.sound = .default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double(seconds), repeats: false)
+        let request = UNNotificationRequest(identifier: "restTimerEnd", content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    // MARK: - Background Persistence
+
+    private func persistSession() {
+        let ud = UserDefaults.standard
+        ud.set(true, forKey: kSessionActive)
+        if let date = sessionStartDate {
+            ud.set(date, forKey: kSessionStartDate)
+        }
+        if let wid = expandedWorkoutID {
+            ud.set(wid.uuidString, forKey: kSessionWorkoutID)
+        }
+    }
+
+    private func clearPersistedSession() {
+        let ud = UserDefaults.standard
+        ud.removeObject(forKey: kSessionActive)
+        ud.removeObject(forKey: kSessionStartDate)
+        ud.removeObject(forKey: kSessionWorkoutID)
+    }
+
+    private func persistRestTimer() {
+        let ud = UserDefaults.standard
+        if let endDate = restTimerEndDate {
+            ud.set(endDate, forKey: kRestTimerEndDate)
+            ud.set(restTimerTotal, forKey: kRestTimerTotal)
+        }
+    }
+
+    private func clearPersistedRestTimer() {
+        let ud = UserDefaults.standard
+        ud.removeObject(forKey: kRestTimerEndDate)
+        ud.removeObject(forKey: kRestTimerTotal)
+    }
+
+    func restoreSessionIfNeeded() {
+        let ud = UserDefaults.standard
+        guard ud.bool(forKey: kSessionActive),
+              let startDate = ud.object(forKey: kSessionStartDate) as? Date else { return }
+
+        // Restore session
+        sessionStartDate = startDate
+        isSessionActive = true
+        isLogging = true
+        sessionElapsed = Date().timeIntervalSince(startDate)
+        startSessionTimer()
+
+        // Restore workout ID
+        if let widStr = ud.string(forKey: kSessionWorkoutID),
+           let wid = UUID(uuidString: widStr) {
+            expandedWorkoutID = wid
+            selectedTab = 1
+        }
+
+        // Restore rest timer if still running
+        if let endDate = ud.object(forKey: kRestTimerEndDate) as? Date {
+            let remaining = Int(endDate.timeIntervalSinceNow)
+            if remaining > 0 {
+                restTimerTotal = ud.integer(forKey: kRestTimerTotal)
+                restTimerRemaining = remaining
+                isRestTimerRunning = true
+                restTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+                    DispatchQueue.main.async {
+                        guard let self else { return }
+                        if self.restTimerRemaining > 0 {
+                            self.restTimerRemaining -= 1
+                            if self.restTimerRemaining == 0 {
+                                self.onRestTimerFinished()
+                            }
+                        } else {
+                            self.stopRestTimer()
+                        }
+                    }
+                }
+            } else {
+                clearPersistedRestTimer()
+            }
+        }
+    }
+
+    // MARK: - App lifecycle
+    func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            // Recalculate elapsed from persisted start date
+            if let start = sessionStartDate, isSessionActive {
+                sessionElapsed = Date().timeIntervalSince(start)
+                if sessionTimer == nil {
+                    startSessionTimer()
+                }
+            }
+            // Recalculate rest timer
+            if let endDate = restTimerEndDate {
+                let remaining = Int(endDate.timeIntervalSinceNow)
+                if remaining > 0 {
+                    restTimerRemaining = remaining
+                } else if isRestTimerRunning {
+                    onRestTimerFinished()
+                }
+            }
+        case .background:
+            // Timers will be killed by OS, but we have dates persisted
+            sessionTimer?.invalidate()
+            sessionTimer = nil
+            restTimer?.invalidate()
+            restTimer = nil
+        default:
+            break
+        }
     }
 
     // MARK: - PR Detection

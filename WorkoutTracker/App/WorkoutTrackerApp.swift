@@ -3,6 +3,7 @@ import SwiftData
 
 @main
 struct WorkoutTrackerApp: App {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var themeManager = ThemeManager()
     @State private var workoutViewModel = WorkoutViewModel()
     @State private var healthKitManager = HealthKitManager()
@@ -13,6 +14,9 @@ struct WorkoutTrackerApp: App {
                 .environment(themeManager)
                 .environment(workoutViewModel)
                 .environment(healthKitManager)
+                .onChange(of: scenePhase) { _, phase in
+                    workoutViewModel.handleScenePhase(phase)
+                }
         }
         .modelContainer(for: [
             UserProfile.self, Workout.self, Exercise.self, ExerciseLog.self,

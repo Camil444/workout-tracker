@@ -11,6 +11,18 @@ struct ExerciseRow: View {
         viewModel.expandedExerciseID == exercise.id
     }
 
+    private var subtitleText: String {
+        let max = exercise.currentMax
+        if max > 0 {
+            if exercise.unit == .pdc {
+                return "Max derniere seance · \(Int(max)) reps"
+            } else {
+                return "Max derniere seance · \(Int(max))kg"
+            }
+        }
+        return "Aucune donnee"
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             Button {
@@ -36,19 +48,9 @@ struct ExerciseRow: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 4))
                             }
                         }
-                        HStack(spacing: 8) {
-                            let logCount = exercise.logs.count
-                            let maxStr: String = {
-                                if exercise.unit == .pdc {
-                                    return "\(Int(exercise.currentMax)) reps"
-                                } else {
-                                    return exercise.currentMax > 0 ? "\(Int(exercise.currentMax))kg" : "-"
-                                }
-                            }()
-                            Text("\(logCount) séries · \(maxStr)")
-                                .font(.caption)
-                                .foregroundStyle(DesignTokens.textSecondary)
-                        }
+                        Text(subtitleText)
+                            .font(.caption)
+                            .foregroundStyle(DesignTokens.textSecondary)
                     }
 
                     Spacer()
@@ -90,5 +92,7 @@ struct ExerciseRow: View {
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
+        .background(isExpanded ? DesignTokens.card1 : .clear)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
