@@ -306,19 +306,34 @@ final class WorkoutViewModel {
     func handleScenePhase(_ phase: ScenePhase) {
         switch phase {
         case .active:
-            // Recalculate elapsed from persisted start date
+            // Recalculate session timer
             if let start = sessionStartDate, isSessionActive {
                 sessionElapsed = Date().timeIntervalSince(start)
                 if sessionTimer == nil {
                     startSessionTimer()
                 }
             }
-            // Recalculate rest timer
-            if let endDate = restTimerEndDate {
+            // Recalculate and restart rest timer
+            if let endDate = restTimerEndDate, isRestTimerRunning {
                 let remaining = Int(endDate.timeIntervalSinceNow)
                 if remaining > 0 {
                     restTimerRemaining = remaining
-                } else if isRestTimerRunning {
+                    // Restart the Timer object (killed by OS in background)
+                    restTimer?.invalidate()
+                    restTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+                        DispatchQueue.main.async {
+                            guard let self else { return }
+                            if self.restTimerRemaining > 0 {
+                                self.restTimerRemaining -= 1
+                                if self.restTimerRemaining == 0 {
+                                    self.onRestTimerFinished()
+                                }
+                            } else {
+                                self.stopRestTimer()
+                            }
+                        }
+                    }
+                } else {
                     onRestTimerFinished()
                 }
             }
