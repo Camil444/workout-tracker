@@ -17,6 +17,9 @@ struct WorkoutTrackerApp: App {
                 .onChange(of: scenePhase) { _, phase in
                     workoutViewModel.handleScenePhase(phase)
                 }
+                .onOpenURL { url in
+                    workoutViewModel.handleDeepLink(url)
+                }
         }
         .modelContainer(for: [
             UserProfile.self, Workout.self, Exercise.self, ExerciseLog.self,

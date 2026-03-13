@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 import AudioToolbox
 import UserNotifications
+import ActivityKit
 
 @Observable
 final class WorkoutViewModel {
@@ -36,6 +37,10 @@ final class WorkoutViewModel {
     var lastSessionDuration: TimeInterval = 0
     var lastSessionExerciseCount: Int = 0
     var sessionFeeling: String = ""
+
+    // Live Activity
+    private var liveActivity: Activity<WorkoutActivityAttributes>?
+    var exerciseCountForActivity: Int = 0
 
     // MARK: - Persistence Keys
     private let kSessionStartDate = "session_startDate"
@@ -83,6 +88,7 @@ final class WorkoutViewModel {
         isLogging = true
         startSessionTimer()
         persistSession()
+        startLiveActivity()
     }
 
     func startLogging() {
@@ -108,6 +114,7 @@ final class WorkoutViewModel {
         showEndConfirmation = false
         showSessionRecap = true
         clearPersistedSession()
+        endLiveActivity()
     }
 
     func dismissRecap() {
@@ -181,6 +188,7 @@ final class WorkoutViewModel {
         }
         persistRestTimer()
         scheduleRestTimerNotification(seconds: seconds)
+        updateLiveActivity()
     }
 
     func stopRestTimer() {
@@ -191,6 +199,7 @@ final class WorkoutViewModel {
         restTimerEndDate = nil
         clearPersistedRestTimer()
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["restTimerEnd"])
+        updateLiveActivity()
     }
 
     private func onRestTimerFinished() {
@@ -276,6 +285,13 @@ final class WorkoutViewModel {
             selectedTab = 1
         }
 
+        // Reconnect to existing Live Activity if any
+        if let existing = Activity<WorkoutActivityAttributes>.activities.first {
+            liveActivity = existing
+        } else {
+            startLiveActivity()
+        }
+
         // Restore rest timer if still running
         if let endDate = ud.object(forKey: kRestTimerEndDate) as? Date {
             let remaining = Int(endDate.timeIntervalSinceNow)
@@ -343,6 +359,77 @@ final class WorkoutViewModel {
             sessionTimer = nil
             restTimer?.invalidate()
             restTimer = nil
+        default:
+            break
+        }
+    }
+
+    // MARK: - Live Activity
+
+    func startLiveActivity() {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled,
+              let startDate = sessionStartDate else { return }
+        let attributes = WorkoutActivityAttributes(sessionStartDate: startDate)
+        let state = WorkoutActivityAttributes.ContentState(
+            isRestTimerRunning: false,
+            restTimerEndDate: nil,
+            restTimerTotal: 0,
+            exerciseCount: exerciseCountForActivity
+        )
+        do {
+            let content = ActivityContent(state: state, staleDate: nil)
+            liveActivity = try Activity.request(
+                attributes: attributes,
+                content: content,
+                pushType: nil
+            )
+        } catch {
+            print("Live Activity start failed: \(error)")
+        }
+    }
+
+    func updateLiveActivity() {
+        guard let liveActivity else { return }
+        let state = WorkoutActivityAttributes.ContentState(
+            isRestTimerRunning: isRestTimerRunning,
+            restTimerEndDate: restTimerEndDate,
+            restTimerTotal: restTimerTotal,
+            exerciseCount: exerciseCountForActivity
+        )
+        Task {
+            let content = ActivityContent(state: state, staleDate: nil)
+            await liveActivity.update(content)
+        }
+    }
+
+    func endLiveActivity() {
+        guard let liveActivity else { return }
+        let state = WorkoutActivityAttributes.ContentState(
+            isRestTimerRunning: false,
+            restTimerEndDate: nil,
+            restTimerTotal: 0,
+            exerciseCount: exerciseCountForActivity
+        )
+        Task {
+            let content = ActivityContent(state: state, staleDate: nil)
+            await liveActivity.end(content, dismissalPolicy: .immediate)
+        }
+        self.liveActivity = nil
+    }
+
+    // MARK: - URL Handling
+
+    func handleDeepLink(_ url: URL) {
+        guard let host = url.host() else { return }
+        switch host {
+        case "rest":
+            if let query = URLComponents(url: url, resolvingAgainstBaseURL: false),
+               let secondsStr = query.queryItems?.first(where: { $0.name == "seconds" })?.value,
+               let seconds = Int(secondsStr) {
+                startRestTimer(seconds: seconds)
+            }
+        case "stoprest":
+            stopRestTimer()
         default:
             break
         }

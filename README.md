@@ -20,6 +20,7 @@ App iOS native en SwiftUI pour suivre ses performances en musculation, course a 
 - **Activites** : suivi d'activites sportives personnalisees
 - **Parametres** : profil, mode sombre/clair, couleur d'accent, timer de repos, gestion des seances, reinitialisation
 - **IA** : identification d'exercice par description (OpenAI)
+- **Live Activity** : widget Dynamic Island + ecran de verrouillage affichant timer de session et repos, boutons pour lancer un repos directement depuis le widget
 
 ## Design
 
@@ -28,6 +29,7 @@ App iOS native en SwiftUI pour suivre ses performances en musculation, course a 
 - Typographie SF Pro bold, interface minimaliste
 - Animations fluides (accordeons, transitions, confetti PR)
 - Session et timers persistent en arriere-plan (UserDefaults)
+- Live Activity avec Dynamic Island (ActivityKit)
 
 ## Architecture
 
@@ -46,6 +48,7 @@ WorkoutTracker/
     Shared/             # Composants reutilisables
   ViewModels/           # ThemeManager, WorkoutViewModel
   Utilities/            # Extensions, Design Tokens, Recommendations, Templates
+WorkoutLiveActivity/     # Widget Extension (Live Activity / Dynamic Island)
 ```
 
 ## Modele de donnees
