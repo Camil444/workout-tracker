@@ -179,7 +179,10 @@ struct WorkoutAccordion: View {
                             Button("Continuer", role: .cancel) { }
                             Button("Terminer", role: .destructive) {
                                 withAnimation {
-                                    viewModel.endSession(exerciseCount: workout.exercises.count)
+                                    let loggedCount = workout.exercises.filter { exercise in
+                                        exercise.logs.contains { Calendar.current.isDateInToday($0.date) }
+                                    }.count
+                                    viewModel.endSession(exerciseCount: loggedCount)
                                 }
                             }
                         } message: {
